@@ -20,6 +20,7 @@ textarea{min-height:90px}.hidden{display:none}.stars{color:#d4a33f;font-size:20p
 .foto-placeholder{height:180px;border-radius:18px;background:#111;display:flex;align-items:center;justify-content:center;font-size:52px;margin-bottom:15px}
 .nav{position:fixed;bottom:0;left:0;right:0;background:#18181a;display:grid;grid-template-columns:repeat(5,1fr);border-top:1px solid #333}
 .nav button{background:none;border:0;border-radius:0;font-size:13px;margin:0;padding:10px 2px}
+.helper{background:#271018;border:1px solid #8a0f35;border-radius:18px;padding:16px;margin:12px 0;color:#f3d7df}
 @media(max-width:700px){.grid{grid-template-columns:1fr}.header h1{font-size:32px}}
 </style>
 </head>
@@ -59,6 +60,14 @@ textarea{min-height:90px}.hidden{display:none}.stars{color:#d4a33f;font-size:20p
 <label>📷 Foto do rótulo</label>
 <input id="fotoInput" type="file" accept="image/*" capture="environment" onchange="carregarFoto(event)">
 <img id="fotoPreview" class="foto-preview hidden">
+
+<div class="helper">
+<b>Assistente de rótulo</b><br>
+Depois da foto, dite ou digite o que aparece no rótulo. Exemplo: “DV Catena Cabernet Malbec 2023 Argentina”.
+</div>
+
+<textarea id="textoRotulo" placeholder="Digite ou dite o texto do rótulo aqui"></textarea>
+<button onclick="analisarRotulo()">🔍 Analisar rótulo</button>
 
 <input id="editIndex" type="hidden">
 <input id="fotoBase64" type="hidden">
@@ -124,8 +133,7 @@ textarea{min-height:90px}.hidden{display:none}.stars{color:#d4a33f;font-size:20p
 let vinhos = JSON.parse(localStorage.getItem("vinhosAdega")) || [
 {nome:"D.V. Catena Cabernet/Malbec",safra:"2023",pais:"Argentina",uva:"Cabernet/Malbec",quantidade:2,valor:190,favorito:true,nota:5,janela:"2026 a 2032",harmonizacao:"Carnes, massas e cordeiro",comentario:"Não pode faltar.",foto:""},
 {nome:"Luigi Bosca Insignia Malbec",safra:"2024",pais:"Argentina",uva:"Malbec",quantidade:2,valor:180,favorito:true,nota:5,janela:"2026 a 2030",harmonizacao:"Churrasco e carnes vermelhas",comentario:"Muito bom, suave, recomprar.",foto:""},
-{nome:"Alma Negra Blend",safra:"2021",pais:"Argentina",uva:"Blend",quantidade:3,valor:160,favorito:true,nota:5,janela:"Agora até 2029",harmonizacao:"Jantar normal, carnes e queijos",comentario:"Suave, leve, espetacular.",foto:""},
-{nome:"Latitude 33",safra:"2024",pais:"Argentina",uva:"Malbec",quantidade:5,valor:60,favorito:false,nota:4,janela:"2025 a 2028",harmonizacao:"Carnes e massas",comentario:"Bom custo-benefício.",foto:""}
+{nome:"Alma Negra Blend",safra:"2021",pais:"Argentina",uva:"Blend",quantidade:3,valor:160,favorito:true,nota:5,janela:"Agora até 2029",harmonizacao:"Jantar normal, carnes e queijos",comentario:"Suave, leve, espetacular.",foto:""}
 ];
 
 function salvar(){localStorage.setItem("vinhosAdega",JSON.stringify(vinhos))}
@@ -133,6 +141,42 @@ function estrelas(n){return "⭐".repeat(Number(n))}
 function totalGarrafas(){return vinhos.reduce((s,v)=>s+Number(v.quantidade),0)}
 function valorTotal(){return vinhos.reduce((s,v)=>s+(Number(v.quantidade)*Number(v.valor)),0)}
 function fotoHTML(v){return v.foto ? `<img class="foto-preview" src="${v.foto}">` : `<div class="foto-placeholder">🍷</div>`}
+
+function analisarRotulo(){
+let texto=document.getElementById("textoRotulo").value.toLowerCase();
+if(!texto){alert("Digite ou dite algo do rótulo primeiro.");return;}
+
+let ano=texto.match(/20[0-9]{2}/);
+if(ano)document.getElementById("safra").value=ano[0];
+
+if(texto.includes("argentina"))document.getElementById("pais").value="Argentina";
+else if(texto.includes("chile"))document.getElementById("pais").value="Chile";
+else if(texto.includes("portugal"))document.getElementById("pais").value="Portugal";
+else if(texto.includes("itália")||texto.includes("italia"))document.getElementById("pais").value="Itália";
+else if(texto.includes("brasil"))document.getElementById("pais").value="Brasil";
+
+if(texto.includes("malbec") && texto.includes("cabernet"))document.getElementById("uva").value="Cabernet/Malbec";
+else if(texto.includes("malbec"))document.getElementById("uva").value="Malbec";
+else if(texto.includes("carménère")||texto.includes("carmenere"))document.getElementById("uva").value="Carménère";
+else if(texto.includes("cabernet"))document.getElementById("uva").value="Cabernet Sauvignon";
+else if(texto.includes("viognier"))document.getElementById("uva").value="Viognier";
+else if(texto.includes("blend"))document.getElementById("uva").value="Blend";
+
+if(texto.includes("dv catena")||texto.includes("d.v. catena"))document.getElementById("nome").value="D.V. Catena Cabernet/Malbec";
+else if(texto.includes("luigi bosca"))document.getElementById("nome").value="Luigi Bosca";
+else if(texto.includes("susana balbo"))document.getElementById("nome").value="Susana Balbo Signature";
+else if(texto.includes("alma negra"))document.getElementById("nome").value="Alma Negra Blend";
+else if(texto.includes("latitude 33"))document.getElementById("nome").value="Latitude 33";
+else if(texto.includes("casillero"))document.getElementById("nome").value="Casillero del Diablo";
+else if(texto.includes("vinha da valentina"))document.getElementById("nome").value="Vinha da Valentina Premium";
+
+if(texto.includes("dv catena")||texto.includes("luigi bosca")||texto.includes("susana balbo")||texto.includes("alma negra")){
+document.getElementById("nota").value="5";
+document.getElementById("favorito").value="true";
+}
+
+alert("Análise concluída. Confira os campos antes de salvar.");
+}
 
 function atualizarDashboard(){
 document.getElementById("totalGarrafas").innerText=totalGarrafas();
@@ -256,7 +300,7 @@ abrirTela("cadastro");
 function limparFormulario(){
 document.getElementById("editIndex").value="";
 document.getElementById("tituloForm").innerText="Adicionar Vinho";
-["nome","safra","pais","uva","quantidade","valor","janela","harmonizacao","comentario","fotoBase64"].forEach(c=>document.getElementById(c).value="");
+["nome","safra","pais","uva","quantidade","valor","janela","harmonizacao","comentario","fotoBase64","textoRotulo"].forEach(c=>document.getElementById(c).value="");
 document.getElementById("nota").value="5";
 document.getElementById("favorito").value="false";
 document.getElementById("fotoPreview").classList.add("hidden");
