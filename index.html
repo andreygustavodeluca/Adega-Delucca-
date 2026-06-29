@@ -12,52 +12,47 @@ body{
   color:#fff;
   font-family:Arial, Helvetica, sans-serif;
 }
-
 .header{
   background:#65001b;
   padding:32px 20px;
   text-align:center;
 }
-
 .header h1{
   margin:0;
   font-size:38px;
 }
-
+.header p{
+  margin-top:10px;
+  color:#f2d8d8;
+}
 .container{
   padding:24px;
 }
-
 .grid{
   display:grid;
   grid-template-columns:repeat(2,1fr);
   gap:18px;
 }
-
 .card{
   background:#1d1d1f;
   border-radius:22px;
   padding:22px;
   box-shadow:0 8px 25px rgba(0,0,0,.25);
 }
-
-.label{
-  color:#b7b7b7;
-  font-size:16px;
+.card h3{
+  margin:0;
+  color:#cfcfcf;
 }
-
-.value{
+.card p{
+  margin:10px 0 0;
   color:#d4a33f;
   font-size:34px;
   font-weight:bold;
-  margin-top:8px;
 }
-
 .section-title{
   margin-top:34px;
-  font-size:24px;
+  font-size:26px;
 }
-
 .wine{
   background:#1d1d1f;
   border-radius:18px;
@@ -65,34 +60,28 @@ body{
   margin-bottom:14px;
   border-left:5px solid #d4a33f;
 }
-
 .wine h3{
   margin:0;
   font-size:22px;
 }
-
 .wine p{
-  margin:6px 0;
+  margin:8px 0;
   color:#cfcfcf;
 }
-
 .badge{
   display:inline-block;
-  margin-top:8px;
-  padding:6px 12px;
+  padding:7px 13px;
   border-radius:999px;
-  background:#65001b;
-  color:#fff;
+  background:#8a0f35;
+  color:white;
   font-size:14px;
 }
-
 .actions{
   display:grid;
   grid-template-columns:repeat(2,1fr);
   gap:14px;
-  margin-top:28px;
+  margin-top:25px;
 }
-
 button{
   border:0;
   border-radius:16px;
@@ -102,7 +91,6 @@ button{
   font-weight:bold;
   font-size:16px;
 }
-
 @media(max-width:700px){
   .grid,.actions{
     grid-template-columns:1fr;
@@ -113,32 +101,34 @@ button{
 
 <body>
 
-<div class="header">
+<header class="header">
   <h1>🍷 ADEGA DELUCCA</h1>
-  <p>Dashboard executivo da sua adega pessoal</p>
-</div>
+  <p>Sistema Inteligente de Gestão da Adega</p>
+</header>
 
 <div class="container">
 
+  <h2 class="section-title">Painel Executivo</h2>
+
   <div class="grid">
     <div class="card">
-      <div class="label">Garrafas em estoque</div>
-      <div class="value">18</div>
+      <h3>🍾 Garrafas</h3>
+      <p>18</p>
     </div>
 
     <div class="card">
-      <div class="label">Valor estimado</div>
-      <div class="value">R$ 4.980</div>
+      <h3>💰 Valor</h3>
+      <p>R$ 4.980</p>
     </div>
 
     <div class="card">
-      <div class="label">Favoritos</div>
-      <div class="value">7</div>
+      <h3>⭐ Favoritos</h3>
+      <p>7</p>
     </div>
 
     <div class="card">
-      <div class="label">Nota média</div>
-      <div class="value">4,7</div>
+      <h3>🍇 País principal</h3>
+      <p>Argentina</p>
     </div>
   </div>
 
