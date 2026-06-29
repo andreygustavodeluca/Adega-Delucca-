@@ -1,24 +1,177 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
-
 <meta charset="UTF-8">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>ADEGA DELUCCA</title>
 
+<style>
+body{
+  margin:0;
+  background:#0f0f10;
+  color:#fff;
+  font-family:Arial, Helvetica, sans-serif;
+}
+
+.header{
+  background:#65001b;
+  padding:32px 20px;
+  text-align:center;
+}
+
+.header h1{
+  margin:0;
+  font-size:38px;
+}
+
+.container{
+  padding:24px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:18px;
+}
+
+.card{
+  background:#1d1d1f;
+  border-radius:22px;
+  padding:22px;
+  box-shadow:0 8px 25px rgba(0,0,0,.25);
+}
+
+.label{
+  color:#b7b7b7;
+  font-size:16px;
+}
+
+.value{
+  color:#d4a33f;
+  font-size:34px;
+  font-weight:bold;
+  margin-top:8px;
+}
+
+.section-title{
+  margin-top:34px;
+  font-size:24px;
+}
+
+.wine{
+  background:#1d1d1f;
+  border-radius:18px;
+  padding:18px;
+  margin-bottom:14px;
+  border-left:5px solid #d4a33f;
+}
+
+.wine h3{
+  margin:0;
+  font-size:22px;
+}
+
+.wine p{
+  margin:6px 0;
+  color:#cfcfcf;
+}
+
+.badge{
+  display:inline-block;
+  margin-top:8px;
+  padding:6px 12px;
+  border-radius:999px;
+  background:#65001b;
+  color:#fff;
+  font-size:14px;
+}
+
+.actions{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:14px;
+  margin-top:28px;
+}
+
+button{
+  border:0;
+  border-radius:16px;
+  padding:18px;
+  background:#8a0f35;
+  color:white;
+  font-weight:bold;
+  font-size:16px;
+}
+
+@media(max-width:700px){
+  .grid,.actions{
+    grid-template-columns:1fr;
+  }
+}
+</style>
 </head>
 
 <body>
-  
-<h1>ADEGA DELUCCA</h1>
 
-<p>Meu primeiro sistema de gerenciamento de vinhos.</p>
+<div class="header">
+  <h1>🍷 ADEGA DELUCCA</h1>
+  <p>Dashboard executivo da sua adega pessoal</p>
+</div>
 
-<button>Cadastrar vinho</button>
-  
+<div class="container">
+
+  <div class="grid">
+    <div class="card">
+      <div class="label">Garrafas em estoque</div>
+      <div class="value">18</div>
+    </div>
+
+    <div class="card">
+      <div class="label">Valor estimado</div>
+      <div class="value">R$ 4.980</div>
+    </div>
+
+    <div class="card">
+      <div class="label">Favoritos</div>
+      <div class="value">7</div>
+    </div>
+
+    <div class="card">
+      <div class="label">Nota média</div>
+      <div class="value">4,7</div>
+    </div>
+  </div>
+
+  <h2 class="section-title">⭐ Ranking Delucca</h2>
+
+  <div class="wine">
+    <h3>D.V. Catena Cabernet/Malbec</h3>
+    <p>Safra 2023 · Argentina</p>
+    <span class="badge">Não pode faltar</span>
+  </div>
+
+  <div class="wine">
+    <h3>Luigi Bosca Insignia Malbec</h3>
+    <p>Safra 2024 · Muito bom · Recomprar</p>
+    <span class="badge">Favorito</span>
+  </div>
+
+  <div class="wine">
+    <h3>Alma Negra Blend</h3>
+    <p>Suave, leve, espetacular</p>
+    <span class="badge">Essencial</span>
+  </div>
+
+  <h2 class="section-title">⚡ Ações rápidas</h2>
+
+  <div class="actions">
+    <button>Adicionar vinho</button>
+    <button>Dar baixa</button>
+    <button>Degustação</button>
+    <button>Sommelier IA</button>
+  </div>
+
+</div>
+
 </body>
-
 </html>
