@@ -9,7 +9,7 @@
 body{
   margin:0;
   background:#0f0f10;
-  color:#fff;
+  color:white;
   font-family:Arial, Helvetica, sans-serif;
   padding-bottom:90px;
 }
@@ -34,7 +34,7 @@ body{
   grid-template-columns:repeat(2,1fr);
   gap:18px;
 }
-.card,.wine{
+.card,.wine,.form-box{
   background:#1d1d1f;
   border-radius:22px;
   padding:22px;
@@ -60,7 +60,7 @@ body{
 }
 .wine h3{
   margin:0;
-  font-size:24px;
+  font-size:23px;
 }
 .wine p{
   color:#ccc;
@@ -70,6 +70,7 @@ body{
   padding:8px 14px;
   border-radius:999px;
   display:inline-block;
+  margin-top:6px;
 }
 .actions{
   display:grid;
@@ -81,9 +82,22 @@ button{
   color:white;
   border:0;
   border-radius:18px;
-  padding:18px;
-  font-size:17px;
+  padding:16px;
+  font-size:16px;
   font-weight:bold;
+}
+input,select{
+  width:100%;
+  padding:15px;
+  margin:8px 0 14px;
+  border-radius:12px;
+  border:1px solid #333;
+  background:#111;
+  color:white;
+  font-size:16px;
+}
+.hidden{
+  display:none;
 }
 .nav{
   position:fixed;
@@ -95,11 +109,11 @@ button{
   grid-template-columns:repeat(4,1fr);
   border-top:1px solid #333;
 }
-.nav a{
-  color:#fff;
-  text-decoration:none;
-  text-align:center;
-  padding:14px 4px;
+.nav button{
+  background:none;
+  border:0;
+  border-radius:0;
+  padding:12px 4px;
   font-size:14px;
 }
 @media(max-width:700px){
@@ -122,67 +136,177 @@ button{
 
 <div class="container">
 
+<section id="inicio">
   <h2 class="section-title">Painel Executivo</h2>
 
   <div class="grid">
-    <div class="card">
-      <h3>🍾 Garrafas</h3>
-      <p>18</p>
-    </div>
-
-    <div class="card">
-      <h3>💰 Valor</h3>
-      <p>R$ 4.980</p>
-    </div>
-
-    <div class="card">
-      <h3>⭐ Favoritos</h3>
-      <p>7</p>
-    </div>
-
-    <div class="card">
-      <h3>🍇 País principal</h3>
-      <p>Argentina</p>
-    </div>
+    <div class="card"><h3>🍾 Garrafas</h3><p id="totalGarrafas">0</p></div>
+    <div class="card"><h3>💰 Valor</h3><p id="valorTotal">R$ 0</p></div>
+    <div class="card"><h3>⭐ Favoritos</h3><p id="favoritos">0</p></div>
+    <div class="card"><h3>🍇 País principal</h3><p>Argentina</p></div>
   </div>
 
-  <h2 class="section-title">Minha Adega</h2>
-
-  <div class="wine">
-    <h3>D.V. Catena Cabernet/Malbec</h3>
-    <p>Safra 2023 · Argentina · Favorito</p>
-    <span class="badge">Não pode faltar</span>
-  </div>
-
-  <div class="wine">
-    <h3>Luigi Bosca Insignia Malbec</h3>
-    <p>Safra 2024 · Muito bom · Recomprar</p>
-    <span class="badge">Favorito</span>
-  </div>
-
+  <h2 class="section-title">Recomendação de Hoje</h2>
   <div class="wine">
     <h3>Alma Negra Blend</h3>
-    <p>Suave, leve, espetacular</p>
-    <span class="badge">Essencial</span>
+    <p>Suave, leve, espetacular. Esse não pode faltar.</p>
+    <span class="badge">Abrir hoje</span>
   </div>
+</section>
 
-  <h2 class="section-title">Ações rápidas</h2>
+<section id="adega" class="hidden">
+  <h2 class="section-title">Minha Adega</h2>
+  <input type="text" id="busca" placeholder="Buscar vinho..." oninput="renderVinhos()" />
+  <div id="listaVinhos"></div>
+</section>
 
-  <div class="actions">
-    <button>Adicionar vinho</button>
-    <button>Dar baixa</button>
-    <button>Degustação</button>
-    <button>Sommelier IA</button>
+<section id="cadastro" class="hidden">
+  <h2 class="section-title">Adicionar Vinho</h2>
+
+  <div class="form-box">
+    <input id="nome" placeholder="Nome do vinho" />
+    <input id="safra" placeholder="Safra" />
+    <input id="pais" placeholder="País" />
+    <input id="uva" placeholder="Uva" />
+    <input id="quantidade" type="number" placeholder="Quantidade" />
+    <input id="valor" type="number" placeholder="Valor médio por garrafa" />
+    <select id="favorito">
+      <option value="false">Favorito? Não</option>
+      <option value="true">Favorito? Sim</option>
+    </select>
+    <button onclick="adicionarVinho()">Salvar vinho</button>
   </div>
+</section>
+
+<section id="ranking" class="hidden">
+  <h2 class="section-title">Ranking Delucca</h2>
+  <div id="rankingLista"></div>
+</section>
+
+<section id="ia" class="hidden">
+  <h2 class="section-title">Sommelier IA</h2>
+  <div class="wine">
+    <h3>🤖 Sugestão</h3>
+    <p>Para dias frios e jantar normal, escolha um vinho mais suave e aromático.</p>
+    <span class="badge">Sugestão: Alma Negra Blend</span>
+  </div>
+</section>
 
 </div>
 
 <nav class="nav">
-  <a href="#">🏠<br>Início</a>
-  <a href="#">🍷<br>Adega</a>
-  <a href="#">⭐<br>Ranking</a>
-  <a href="#">🤖<br>IA</a>
+  <button onclick="abrirTela('inicio')">🏠<br>Início</button>
+  <button onclick="abrirTela('adega')">🍷<br>Adega</button>
+  <button onclick="abrirTela('ranking')">⭐<br>Ranking</button>
+  <button onclick="abrirTela('ia')">🤖<br>IA</button>
 </nav>
+
+<script>
+let vinhos = JSON.parse(localStorage.getItem("vinhosAdega")) || [
+  {nome:"D.V. Catena Cabernet/Malbec", safra:"2023", pais:"Argentina", uva:"Cabernet/Malbec", quantidade:2, valor:190, favorito:true, nota:5},
+  {nome:"Luigi Bosca Insignia Malbec", safra:"2024", pais:"Argentina", uva:"Malbec", quantidade:2, valor:180, favorito:true, nota:5},
+  {nome:"Alma Negra Blend", safra:"2021", pais:"Argentina", uva:"Blend", quantidade:3, valor:160, favorito:true, nota:5},
+  {nome:"Latitude 33", safra:"2024", pais:"Argentina", uva:"Malbec", quantidade:5, valor:60, favorito:false, nota:4},
+  {nome:"Vinha da Valentina Premium", safra:"2022", pais:"Portugal", uva:"Blend", quantidade:1, valor:75, favorito:false, nota:3}
+];
+
+function salvar(){
+  localStorage.setItem("vinhosAdega", JSON.stringify(vinhos));
+}
+
+function atualizarDashboard(){
+  let total = vinhos.reduce((s,v)=>s+Number(v.quantidade),0);
+  let valor = vinhos.reduce((s,v)=>s+(Number(v.quantidade)*Number(v.valor)),0);
+  let favs = vinhos.filter(v=>v.favorito).length;
+
+  document.getElementById("totalGarrafas").innerText = total;
+  document.getElementById("valorTotal").innerText = "R$ " + valor.toLocaleString("pt-BR");
+  document.getElementById("favoritos").innerText = favs;
+}
+
+function renderVinhos(){
+  let busca = document.getElementById("busca")?.value?.toLowerCase() || "";
+  let lista = document.getElementById("listaVinhos");
+  lista.innerHTML = "";
+
+  vinhos
+    .filter(v => v.nome.toLowerCase().includes(busca) || v.pais.toLowerCase().includes(busca) || v.uva.toLowerCase().includes(busca))
+    .forEach((v,i)=>{
+      lista.innerHTML += `
+        <div class="wine">
+          <h3>${v.nome}</h3>
+          <p>Safra ${v.safra} · ${v.pais} · ${v.uva}</p>
+          <p>Quantidade: ${v.quantidade} · Valor médio: R$ ${v.valor}</p>
+          <span class="badge">${v.favorito ? "Favorito" : "Adega"}</span>
+          <br><br>
+          <button onclick="darBaixa(${i})">Dar baixa</button>
+        </div>
+      `;
+    });
+}
+
+function renderRanking(){
+  let lista = document.getElementById("rankingLista");
+  lista.innerHTML = "";
+
+  [...vinhos]
+    .sort((a,b)=>b.nota-a.nota)
+    .forEach(v=>{
+      lista.innerHTML += `
+        <div class="wine">
+          <h3>${v.nome}</h3>
+          <p>Nota Delucca: ${v.nota} ⭐</p>
+          <span class="badge">${v.favorito ? "Não pode faltar" : "Avaliado"}</span>
+        </div>
+      `;
+    });
+}
+
+function adicionarVinho(){
+  let novo = {
+    nome:document.getElementById("nome").value,
+    safra:document.getElementById("safra").value,
+    pais:document.getElementById("pais").value,
+    uva:document.getElementById("uva").value,
+    quantidade:Number(document.getElementById("quantidade").value),
+    valor:Number(document.getElementById("valor").value),
+    favorito:document.getElementById("favorito").value === "true",
+    nota:4
+  };
+
+  if(!novo.nome){
+    alert("Digite o nome do vinho.");
+    return;
+  }
+
+  vinhos.push(novo);
+  salvar();
+  atualizarTudo();
+  abrirTela("adega");
+}
+
+function darBaixa(index){
+  if(vinhos[index].quantidade > 0){
+    vinhos[index].quantidade--;
+  }
+  salvar();
+  atualizarTudo();
+}
+
+function abrirTela(id){
+  document.querySelectorAll("section").forEach(s=>s.classList.add("hidden"));
+  document.getElementById(id).classList.remove("hidden");
+  atualizarTudo();
+}
+
+function atualizarTudo(){
+  atualizarDashboard();
+  renderVinhos();
+  renderRanking();
+}
+
+atualizarTudo();
+</script>
 
 </body>
 </html>
