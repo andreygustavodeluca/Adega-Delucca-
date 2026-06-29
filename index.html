@@ -4,9 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ADEGA DELUCCA</title>
-
 <style>
-body{margin:0;background:#0f0f10;color:white;font-family:Arial,Helvetica,sans-serif;padding-bottom:90px}
+body{margin:0;background:#0f0f10;color:white;font-family:Arial,Helvetica,sans-serif;padding-bottom:95px}
 .header{background:#76001f;padding:32px 20px;text-align:center}
 .header h1{margin:0;font-size:38px}.header p{color:#f1d6dc}
 .container{padding:22px}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:15px}
@@ -16,7 +15,9 @@ h2{margin-top:30px}.wine{margin-bottom:14px;border-left:5px solid #d4a33f}
 .wine h3{margin:0}.wine p{color:#ccc}.badge{background:#8a0f35;padding:7px 12px;border-radius:999px;display:inline-block;margin-top:5px}
 button{background:#970f3d;color:white;border:0;border-radius:16px;padding:14px;font-size:15px;font-weight:bold;margin:5px 4px 5px 0}
 input,select,textarea{width:100%;box-sizing:border-box;padding:14px;margin:7px 0 12px;border-radius:12px;border:1px solid #333;background:#111;color:white;font-size:16px}
-textarea{min-height:100px}.hidden{display:none}.stars{color:#d4a33f;font-size:20px}
+textarea{min-height:90px}.hidden{display:none}.stars{color:#d4a33f;font-size:20px}
+.foto-preview{width:100%;max-height:260px;object-fit:cover;border-radius:18px;margin:10px 0 16px;background:#111}
+.foto-placeholder{height:180px;border-radius:18px;background:#111;display:flex;align-items:center;justify-content:center;font-size:52px;margin-bottom:15px}
 .nav{position:fixed;bottom:0;left:0;right:0;background:#18181a;display:grid;grid-template-columns:repeat(5,1fr);border-top:1px solid #333}
 .nav button{background:none;border:0;border-radius:0;font-size:13px;margin:0;padding:10px 2px}
 @media(max-width:700px){.grid{grid-template-columns:1fr}.header h1{font-size:32px}}
@@ -27,7 +28,7 @@ textarea{min-height:100px}.hidden{display:none}.stars{color:#d4a33f;font-size:20
 
 <header class="header">
 <h1>🍷 ADEGA DELUCCA</h1>
-<p>Sistema Inteligente de Gestão da Adega</p>
+<p>Gestão inteligente da sua adega pessoal</p>
 </header>
 
 <div class="container">
@@ -53,17 +54,25 @@ textarea{min-height:100px}.hidden{display:none}.stars{color:#d4a33f;font-size:20
 
 <section id="cadastro" class="hidden">
 <h2 id="tituloForm">Adicionar Vinho</h2>
+
 <div class="box">
+<label>📷 Foto do rótulo</label>
+<input id="fotoInput" type="file" accept="image/*" capture="environment" onchange="carregarFoto(event)">
+<img id="fotoPreview" class="foto-preview hidden">
+
 <input id="editIndex" type="hidden">
+<input id="fotoBase64" type="hidden">
+
 <input id="nome" placeholder="Nome do vinho">
 <input id="safra" placeholder="Safra">
 <input id="pais" placeholder="País">
 <input id="uva" placeholder="Uva">
 <input id="quantidade" type="number" placeholder="Quantidade">
-<input id="valor" type="number" placeholder="Valor médio">
+<input id="valor" type="number" placeholder="Valor pago por garrafa">
 <input id="janela" placeholder="Janela ideal de consumo">
 <input id="harmonizacao" placeholder="Harmonização">
 <textarea id="comentario" placeholder="Comentário pessoal"></textarea>
+
 <select id="nota">
 <option value="5">Nota 5 ⭐⭐⭐⭐⭐</option>
 <option value="4">Nota 4 ⭐⭐⭐⭐</option>
@@ -71,11 +80,13 @@ textarea{min-height:100px}.hidden{display:none}.stars{color:#d4a33f;font-size:20
 <option value="2">Nota 2 ⭐⭐</option>
 <option value="1">Nota 1 ⭐</option>
 </select>
+
 <select id="favorito">
 <option value="false">Favorito? Não</option>
 <option value="true">Favorito? Sim</option>
 </select>
-<button onclick="salvarFormulario()">Salvar</button>
+
+<button onclick="salvarFormulario()">Salvar vinho</button>
 <button onclick="limparFormulario()">Limpar</button>
 </div>
 </section>
@@ -85,15 +96,6 @@ textarea{min-height:100px}.hidden{display:none}.stars{color:#d4a33f;font-size:20
 <div id="rankingLista"></div>
 </section>
 
-<section id="backup" class="hidden">
-<h2>Backup da Adega</h2>
-<div class="box">
-<button onclick="exportarBackup()">Gerar backup</button>
-<textarea id="backupTexto" placeholder="Aqui aparecerá o backup da sua adega. Copie e salve em local seguro."></textarea>
-<button onclick="importarBackup()">Importar backup colado acima</button>
-</div>
-</section>
-
 <section id="ia" class="hidden">
 <h2>Sommelier IA</h2>
 <div class="wine">
@@ -101,6 +103,11 @@ textarea{min-height:100px}.hidden{display:none}.stars{color:#d4a33f;font-size:20
 <p id="textoIA"></p>
 <span class="badge">Baseado no seu perfil</span>
 </div>
+</section>
+
+<section id="detalhe" class="hidden">
+<h2>Ficha do Vinho</h2>
+<div id="detalheVinho"></div>
 </section>
 
 </div>
@@ -115,16 +122,17 @@ textarea{min-height:100px}.hidden{display:none}.stars{color:#d4a33f;font-size:20
 
 <script>
 let vinhos = JSON.parse(localStorage.getItem("vinhosAdega")) || [
-{nome:"D.V. Catena Cabernet/Malbec",safra:"2023",pais:"Argentina",uva:"Cabernet/Malbec",quantidade:2,valor:190,favorito:true,nota:5,janela:"2026 a 2032",harmonizacao:"Carnes, massas e cordeiro",comentario:"Não pode faltar."},
-{nome:"Luigi Bosca Insignia Malbec",safra:"2024",pais:"Argentina",uva:"Malbec",quantidade:2,valor:180,favorito:true,nota:5,janela:"2026 a 2030",harmonizacao:"Churrasco e carnes vermelhas",comentario:"Muito bom, suave, recomprar."},
-{nome:"Alma Negra Blend",safra:"2021",pais:"Argentina",uva:"Blend",quantidade:3,valor:160,favorito:true,nota:5,janela:"Agora até 2029",harmonizacao:"Jantar normal, carnes e queijos",comentario:"Suave, leve, espetacular."},
-{nome:"Latitude 33",safra:"2024",pais:"Argentina",uva:"Malbec",quantidade:5,valor:60,favorito:false,nota:4,janela:"2025 a 2028",harmonizacao:"Carnes e massas",comentario:"Bom custo-benefício."}
+{nome:"D.V. Catena Cabernet/Malbec",safra:"2023",pais:"Argentina",uva:"Cabernet/Malbec",quantidade:2,valor:190,favorito:true,nota:5,janela:"2026 a 2032",harmonizacao:"Carnes, massas e cordeiro",comentario:"Não pode faltar.",foto:""},
+{nome:"Luigi Bosca Insignia Malbec",safra:"2024",pais:"Argentina",uva:"Malbec",quantidade:2,valor:180,favorito:true,nota:5,janela:"2026 a 2030",harmonizacao:"Churrasco e carnes vermelhas",comentario:"Muito bom, suave, recomprar.",foto:""},
+{nome:"Alma Negra Blend",safra:"2021",pais:"Argentina",uva:"Blend",quantidade:3,valor:160,favorito:true,nota:5,janela:"Agora até 2029",harmonizacao:"Jantar normal, carnes e queijos",comentario:"Suave, leve, espetacular.",foto:""},
+{nome:"Latitude 33",safra:"2024",pais:"Argentina",uva:"Malbec",quantidade:5,valor:60,favorito:false,nota:4,janela:"2025 a 2028",harmonizacao:"Carnes e massas",comentario:"Bom custo-benefício.",foto:""}
 ];
 
 function salvar(){localStorage.setItem("vinhosAdega",JSON.stringify(vinhos))}
 function estrelas(n){return "⭐".repeat(Number(n))}
 function totalGarrafas(){return vinhos.reduce((s,v)=>s+Number(v.quantidade),0)}
 function valorTotal(){return vinhos.reduce((s,v)=>s+(Number(v.quantidade)*Number(v.valor)),0)}
+function fotoHTML(v){return v.foto ? `<img class="foto-preview" src="${v.foto}">` : `<div class="foto-placeholder">🍷</div>`}
 
 function atualizarDashboard(){
 document.getElementById("totalGarrafas").innerText=totalGarrafas();
@@ -149,11 +157,13 @@ vinhos.filter(v=>v.nome.toLowerCase().includes(busca)||v.pais.toLowerCase().incl
 .forEach((v,i)=>{
 lista.innerHTML+=`
 <div class="wine">
+${fotoHTML(v)}
 <h3>${v.nome}</h3>
 <p>Safra ${v.safra} · ${v.pais} · ${v.uva}</p>
 <p>Qtd: ${v.quantidade} · R$ ${v.valor} · <span class="stars">${estrelas(v.nota)}</span></p>
 <p>${v.comentario||""}</p>
 <span class="badge">${v.favorito?"Não pode faltar":"Adega"}</span><br><br>
+<button onclick="abrirDetalhe(${i})">Ver ficha</button>
 <button onclick="darBaixa(${i})">Dar baixa</button>
 <button onclick="editarVinho(${i})">Editar</button>
 <button onclick="excluirVinho(${i})">Excluir</button>
@@ -161,17 +171,53 @@ lista.innerHTML+=`
 });
 }
 
+function abrirDetalhe(i){
+let v=vinhos[i];
+document.getElementById("detalheVinho").innerHTML=`
+<div class="box">
+${fotoHTML(v)}
+<h2>${v.nome}</h2>
+<p class="stars">${estrelas(v.nota)}</p>
+<p><b>Safra:</b> ${v.safra}</p>
+<p><b>País:</b> ${v.pais}</p>
+<p><b>Uva:</b> ${v.uva}</p>
+<p><b>Quantidade:</b> ${v.quantidade}</p>
+<p><b>Valor pago:</b> R$ ${v.valor}</p>
+<p><b>Janela ideal:</b> ${v.janela||"Não informada"}</p>
+<p><b>Harmonização:</b> ${v.harmonizacao||"Não informada"}</p>
+<p><b>Comentário:</b> ${v.comentario||"Sem comentário"}</p>
+<span class="badge">${v.favorito?"Não pode faltar":"Adega"}</span><br><br>
+<button onclick="darBaixa(${i})">Dar baixa</button>
+<button onclick="editarVinho(${i})">Editar</button>
+</div>`;
+abrirTela("detalhe");
+}
+
 function renderRanking(){
 let lista=document.getElementById("rankingLista"); lista.innerHTML="";
 [...vinhos].sort((a,b)=>b.nota-a.nota).forEach(v=>{
 lista.innerHTML+=`
 <div class="wine">
+${fotoHTML(v)}
 <h3>${v.nome}</h3>
 <p>${v.pais} · ${v.uva}</p>
 <p class="stars">${estrelas(v.nota)}</p>
 <span class="badge">${v.favorito?"Não pode faltar":"Avaliado"}</span>
 </div>`;
 });
+}
+
+function carregarFoto(event){
+let file=event.target.files[0];
+if(!file)return;
+let reader=new FileReader();
+reader.onload=function(e){
+document.getElementById("fotoBase64").value=e.target.result;
+let preview=document.getElementById("fotoPreview");
+preview.src=e.target.result;
+preview.classList.remove("hidden");
+};
+reader.readAsDataURL(file);
 }
 
 function salvarFormulario(){
@@ -187,7 +233,8 @@ janela:document.getElementById("janela").value,
 harmonizacao:document.getElementById("harmonizacao").value,
 comentario:document.getElementById("comentario").value,
 nota:Number(document.getElementById("nota").value),
-favorito:document.getElementById("favorito").value==="true"
+favorito:document.getElementById("favorito").value==="true",
+foto:document.getElementById("fotoBase64").value
 };
 if(!vinho.nome){alert("Digite o nome do vinho.");return}
 if(i===""){vinhos.push(vinho)}else{vinhos[Number(i)]=vinho}
@@ -200,30 +247,26 @@ document.getElementById("editIndex").value=i;
 document.getElementById("tituloForm").innerText="Editar Vinho";
 ["nome","safra","pais","uva","quantidade","valor","janela","harmonizacao","comentario","nota"].forEach(c=>document.getElementById(c).value=v[c]||"");
 document.getElementById("favorito").value=String(v.favorito);
+document.getElementById("fotoBase64").value=v.foto||"";
+let preview=document.getElementById("fotoPreview");
+if(v.foto){preview.src=v.foto;preview.classList.remove("hidden")}else{preview.classList.add("hidden")}
 abrirTela("cadastro");
 }
 
 function limparFormulario(){
 document.getElementById("editIndex").value="";
 document.getElementById("tituloForm").innerText="Adicionar Vinho";
-["nome","safra","pais","uva","quantidade","valor","janela","harmonizacao","comentario"].forEach(c=>document.getElementById(c).value="");
+["nome","safra","pais","uva","quantidade","valor","janela","harmonizacao","comentario","fotoBase64"].forEach(c=>document.getElementById(c).value="");
 document.getElementById("nota").value="5";
 document.getElementById("favorito").value="false";
+document.getElementById("fotoPreview").classList.add("hidden");
+document.getElementById("fotoInput").value="";
 }
 
-function darBaixa(i){if(vinhos[i].quantidade>0)vinhos[i].quantidade--;salvar();atualizarTudo();}
-function excluirVinho(i){if(confirm("Excluir este vinho?")){vinhos.splice(i,1);salvar();atualizarTudo();}}
-function exportarBackup(){document.getElementById("backupTexto").value=JSON.stringify(vinhos,null,2)}
-function importarBackup(){
-try{vinhos=JSON.parse(document.getElementById("backupTexto").value);salvar();atualizarTudo();alert("Backup importado com sucesso.")}
-catch(e){alert("Backup inválido.")}
-}
-function abrirTela(id){
-document.querySelectorAll("section").forEach(s=>s.classList.add("hidden"));
-document.getElementById(id).classList.remove("hidden");
-atualizarTudo();
-}
-function atualizarTudo(){atualizarDashboard();renderVinhos();renderRanking();}
+function darBaixa(i){if(vinhos[i].quantidade>0)vinhos[i].quantidade--;salvar();atualizarTudo();abrirTela("adega")}
+function excluirVinho(i){if(confirm("Excluir este vinho?")){vinhos.splice(i,1);salvar();atualizarTudo();abrirTela("adega")}}
+function abrirTela(id){document.querySelectorAll("section").forEach(s=>s.classList.add("hidden"));document.getElementById(id).classList.remove("hidden");atualizarTudo()}
+function atualizarTudo(){atualizarDashboard();renderVinhos();renderRanking()}
 atualizarTudo();
 </script>
 
