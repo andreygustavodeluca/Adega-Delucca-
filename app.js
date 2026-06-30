@@ -1,494 +1,339 @@
-// ADEGA DELUCCA V11 - PARTE 1
+// ====================================
+// ADEGA DELUCCA V12
+// Inicialização
+// ====================================
+
+const STORAGE_KEY = "adegaDelucca";
+
+let vinhos = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
 
 let filtroAtual = "todos";
 
-let vinhos = JSON.parse(localStorage.getItem("adegaDelucca")) || JSON.parse(localStorage.getItem("vinhosAdega")) || [
-  {
-    nome:"D.V. Catena Cabernet/Malbec",
-    safra:"2023",
-    pais:"Argentina",
-    uva:"Cabernet/Malbec",
-    quantidade:2,
-    valor:190,
-    favorito:true,
-    recompra:true,
-    nota:5,
-    janela:"2026 a 2032",
-    harmonizacao:"Carnes, massas, cordeiro e churrasco premium",
-    comentario:"Não pode faltar.",
-    foto:""
-  },
-  {
-    nome:"Luigi Bosca Insignia Malbec",
-    safra:"2024",
-    pais:"Argentina",
-    uva:"Malbec",
-    quantidade:2,
-    valor:180,
-    favorito:true,
-    recompra:true,
-    nota:5,
-    janela:"2026 a 2030",
-    harmonizacao:"Churrasco e carnes vermelhas",
-    comentario:"Muito bom, suave, recomprar.",
-    foto:""
-  },
-  {
-    nome:"Alma Negra Blend",
-    safra:"2021",
-    pais:"Argentina",
-    uva:"Blend",
-    quantidade:3,
-    valor:160,
-    favorito:true,
-    recompra:true,
-    nota:5,
-    janela:"Agora até 2029",
-    harmonizacao:"Jantar normal, carnes, queijos e massas",
-    comentario:"Suave, leve, espetacular.",
-    foto:""
-  }
-];
-
 function salvarDados(){
-  localStorage.setItem("adegaDelucca", JSON.stringify(vinhos));
-}
-
-function estrelas(n){
-  return "⭐".repeat(Number(n || 0));
-}
-
-function totalGarrafas(){
-  return vinhos.reduce((s,v)=>s + Number(v.quantidade || 0), 0);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(vinhos));
 }
 
 function valorTotal(){
-  return vinhos.reduce((s,v)=>s + (Number(v.quantidade || 0) * Number(v.valor || 0)), 0);
+    return vinhos.reduce((t,v)=>t+(Number(v.valor||0)*Number(v.quantidade||0)),0);
 }
 
-function fotoHTML(v){
-  if(v.foto){
-    return `<img class="foto-mini" src="${v.foto}">`;
-  }
-  if(v.imagem){
-    return `<img class="foto-mini" src="${v.imagem}">`;
-  }
-  return `<div class="foto-placeholder">🍷</div>`;
+function totalGarrafas(){
+    return vinhos.reduce((t,v)=>t+Number(v.quantidade||0),0);
 }
 
-function normalizarNome(nome){
-  let n = String(nome || "").toLowerCase().trim();
-
-  if(n.includes("almanegra") || n.includes("alma negra")) return "Alma Negra Blend";
-  if(n.includes("dv catena") || n.includes("d.v. catena")) return "D.V. Catena Cabernet/Malbec";
-  if(n.includes("luigi bosca")) return "Luigi Bosca Insignia Malbec";
-  if(n.includes("susana balbo")) return "Susana Balbo Signature";
-  if(n.includes("latitude 33")) return "Latitude 33";
-  if(n.includes("catena alta")) return "Catena Alta Malbec";
-  if(n.includes("zuccardi")) return "Zuccardi Q Malbec";
-
-  return nome;
+function estoqueBaixo(){
+    return vinhos.filter(v=>Number(v.quantidade)<=1).length;
 }
 
-function carregarFoto(event){
-  let file = event.target.files[0];
-  if(!file) return;
+function favoritos(){
+    return vinhos.filter(v=>v.favorito).length;
+}
+// ====================================
+// DASHBOARD
+// ====================================
 
-  let reader = new FileReader();
+function atualizarDashboard(){
 
-  reader.onload = function(e){
-    document.getElementById("fotoBase64").value = e.target.result;
-    let preview = document.getElementById("fotoPreview");
-    preview.src = e.target.result;
-    preview.classList.remove("hidden");
-  };
+    const g = document.getElementById("totalGarrafas");
+    if(g) g.innerText = totalGarrafas();
 
-  reader.readAsDataURL(file);
-    function atualizarDashboard(){
+    const v = document.getElementById("valorTotal");
+    if(v) v.innerText =
+        "R$ " + valorTotal().toLocaleString("pt-BR");
 
-  document.getElementById("totalGarrafas").innerText = totalGarrafas();
+    const f = document.getElementById("favoritos");
+    if(f) f.innerText = favoritos();
 
-  document.getElementById("valorTotal").innerText =
-      "R$ " + valorTotal().toLocaleString("pt-BR");
+    const e = document.getElementById("estoqueBaixo");
+    if(e) e.innerText = estoqueBaixo();
 
-  document.getElementById("favoritos").innerText =
-      vinhos.filter(v=>v.favorito).length;
-
-  document.getElementById("estoqueBaixo").innerText =
-      vinhos.filter(v=>Number(v.quantidade)<=1).length;
-
-  let paises={};
-
-  vinhos.forEach(v=>{
-
-      if(!paises[v.pais]) paises[v.pais]=0;
-
-      paises[v.pais]+=Number(v.quantidade);
-
-  });
-
-  let html="";
-
-  Object.keys(paises).forEach(p=>{
-
-      html+=`<div class="badge">${p} (${paises[p]})</div> `;
-
-  });
-
-  document.getElementById("totalPaises").innerHTML=html;
-
-  let sugestao=[...vinhos]
-      .filter(v=>Number(v.quantidade)>0)
-      .sort((a,b)=>b.nota-a.nota)[0];
-
-  if(sugestao){
-
-      document.getElementById("sugestaoHoje").innerHTML=`
-
-      ${fotoHTML(sugestao)}
-
-      <h3>${sugestao.nome}</h3>
-
-      <p>${sugestao.comentario}</p>
-
-      <span class="badge">Abrir hoje</span>
-
-      <div class="clear"></div>
-
-      `;
-
-  }
-
+    atualizarSugestao();
 }
 
-function atualizarIA(){
+function atualizarSugestao(){
 
-document.getElementById("textoIA").innerHTML=
+    const div = document.getElementById("sugestaoHoje");
 
-"Seu perfil mostra preferência por vinhos elegantes, aromáticos e equilibrados. " +
+    if(!div) return;
 
-"Priorize Alma Negra, Luigi Bosca, Catena Alta e D.V. Catena. " +
+    if(vinhos.length===0){
 
-"Evite deixar o estoque destes rótulos abaixo de 2 garrafas.";
+        div.innerHTML =
+        "<div class='wine'><h3>Sua adega está vazia</h3><p>Cadastre seu primeiro vinho.</p></div>";
 
+        return;
+    }
+
+    let melhor = [...vinhos]
+        .sort((a,b)=>(b.nota||0)-(a.nota||0))[0];
+
+    div.innerHTML = `
+        <div class="wine">
+            <h3>${melhor.nome}</h3>
+            <p>${melhor.comentario || ""}</p>
+            <span class="badge">
+                Janela: ${melhor.janela || "-"}
+            </span>
+        </div>
+    `;
 }
+// ====================================
+// CATÁLOGO DELUCCA
+// ====================================
 
-function abrirTela(id){
-
-document.querySelectorAll("section").forEach(s=>s.classList.add("hidden"));
-
-document.getElementById(id).classList.remove("hidden");
-
-atualizarTudo();
-
-}
-
-function atualizarTudo(){
-
-atualizarDashboard();
-
-renderVinhos();
-
-renderRanking();
-
-atualizarIA();
-
-}
-    
-    
-}
 function buscarNoCatalogo(){
-  let nomeDigitado = normalizarNome(document.getElementById("nome").value).toLowerCase();
 
-  if(!nomeDigitado){
-    alert("Digite o nome do vinho para buscar no catálogo.");
-    return;
-  }
+    const nomeDigitado = document.getElementById("nome").value.toLowerCase();
 
-  let item = catalogo.find(c =>
-    c.nome.toLowerCase().includes(nomeDigitado) ||
-    nomeDigitado.includes(c.nome.toLowerCase())
-  );
+    if(!nomeDigitado){
+        alert("Digite o nome do vinho.");
+        return;
+    }
 
-  if(!item){
-    alert("Vinho ainda não encontrado no Catálogo Delucca.");
-    return;
-  }
+    if(typeof catalogo === "undefined"){
+        alert("Catálogo ainda não carregado.");
+        return;
+    }
 
-  document.getElementById("nome").value = item.nome;
-  document.getElementById("safra").value = item.safra || "";
-  document.getElementById("pais").value = item.pais || "";
-  document.getElementById("uva").value = item.uva || "";
-  document.getElementById("janela").value = item.janela || "";
-  document.getElementById("harmonizacao").value = item.harmonizacao || "";
-  document.getElementById("comentario").value = item.comentario || "";
-  document.getElementById("nota").value = item.nota || 5;
-  document.getElementById("favorito").value = "true";
-  document.getElementById("recompra").value = String(item.recomprar || false);
+    const item = catalogo.find(v =>
+        v.nome.toLowerCase().includes(nomeDigitado) ||
+        nomeDigitado.includes(v.nome.toLowerCase())
+    );
 
-  if(item.imagem){
-    document.getElementById("fotoBase64").value = item.imagem;
-    let preview = document.getElementById("fotoPreview");
-    preview.src = item.imagem;
-    preview.classList.remove("hidden");
-  }
+    if(!item){
+        alert("Vinho não encontrado no catálogo.");
+        return;
+    }
 
-  alert("Informações preenchidas pelo Catálogo Delucca.");
+    document.getElementById("nome").value = item.nome || "";
+    document.getElementById("safra").value = item.safra || "";
+    document.getElementById("pais").value = item.pais || "";
+    document.getElementById("uva").value = item.uva || "";
+    document.getElementById("janela").value = item.janela || "";
+    document.getElementById("harmonizacao").value = item.harmonizacao || "";
+    document.getElementById("comentario").value = item.comentario || "";
+    document.getElementById("nota").value = item.nota || 5;
+    document.getElementById("favorito").value = item.recomprar ? "true" : "false";
+    document.getElementById("recompra").value = item.recomprar ? "true" : "false";
+
+    alert("Informações carregadas do Catálogo Delucca.");
 }
 
 function gerarRecomendacoes(){
-  document.getElementById("nome").value = normalizarNome(document.getElementById("nome").value);
 
-  let nome = document.getElementById("nome").value.toLowerCase();
-  let pais = document.getElementById("pais").value.toLowerCase();
-  let uva = document.getElementById("uva").value.toLowerCase();
+    const uva = document.getElementById("uva").value.toLowerCase();
+    const pais = document.getElementById("pais").value.toLowerCase();
 
-  let janela = "2025 a 2028";
-  let harmonizacao = "Carnes, massas e queijos";
-  let comentario = "Boa opção para manter na adega.";
-  let nota = "4";
-  let favorito = "false";
-  let recompra = "false";
+    let janela = "2025 a 2028";
+    let harmonizacao = "Carnes, massas e queijos";
+    let comentario = "Boa opção para manter na adega.";
 
-  if(uva.includes("malbec")){
-    janela = "2026 a 2030";
-    harmonizacao = "Churrasco, carnes vermelhas, massas com molho e queijos curados";
-    comentario = "Perfil frutado e encorpado, bom para carnes.";
-  }
+    if(uva.includes("malbec")){
+        janela = "2026 a 2030";
+        harmonizacao = "Churrasco, carnes vermelhas e massas";
+        comentario = "Perfil ideal para carnes e noites frias.";
+    }
 
-  if(uva.includes("cabernet")){
-    janela = "2027 a 2033";
-    harmonizacao = "Carnes intensas, cordeiro e queijos fortes";
-    comentario = "Boa estrutura e potencial de guarda.";
-  }
+    if(uva.includes("blend")){
+        janela = "Agora até 2029";
+        harmonizacao = "Massas, carnes, queijos e jantar normal";
+        comentario = "Blend versátil, equilibrado e fácil de agradar.";
+    }
 
-  if(uva.includes("blend")){
-    janela = "Agora até 2029";
-    harmonizacao = "Jantares variados, massas, carnes e queijos";
-    comentario = "Blend versátil, equilibrado e fácil de agradar.";
-  }
+    if(pais.includes("portugal")){
+        janela = "2025 a 2030";
+        harmonizacao = "Bacalhau, carnes assadas e queijos";
+        comentario = "Boa opção portuguesa para diversificar a adega.";
+    }
 
-  if(pais.includes("portugal")){
-    janela = "2025 a 2030";
-    harmonizacao = "Bacalhau, carnes assadas e pratos mediterrâneos";
-    comentario = "Boa opção portuguesa para diversificar.";
-  }
+    document.getElementById("janela").value = janela;
+    document.getElementById("harmonizacao").value = harmonizacao;
+    document.getElementById("comentario").value = comentario;
 
-  if(nome.includes("catena") || nome.includes("luigi") || nome.includes("alma negra") || nome.includes("susana")){
-    nota = "5";
-    favorito = "true";
-    recompra = "true";
-    comentario = "Rótulo alinhado ao perfil Delucca: elegante, aromático e com alta chance de recompra.";
-  }
+    alert("Recomendações geradas.");
+}
+// ====================================
+// LISTAGEM DA ADEGA
+// ====================================
 
-  document.getElementById("janela").value = janela;
-  document.getElementById("harmonizacao").value = harmonizacao;
-  document.getElementById("comentario").value = comentario;
-  document.getElementById("nota").value = nota;
-  document.getElementById("favorito").value = favorito;
-  document.getElementById("recompra").value = recompra;
+function renderVinhos(){
 
-  alert("Recomendações geradas.");
+    const lista = document.getElementById("listaVinhos");
+    if(!lista) return;
+
+    const busca = (document.getElementById("busca")?.value || "").toLowerCase();
+
+    lista.innerHTML = "";
+
+    vinhos
+    .filter(v=>{
+        const texto = `${v.nome} ${v.pais} ${v.uva}`.toLowerCase();
+
+        const filtro =
+            filtroAtual === "todos" ||
+            (filtroAtual === "favoritos" && v.favorito) ||
+            (filtroAtual === "baixo" && Number(v.quantidade)<=1);
+
+        return texto.includes(busca) && filtro;
+    })
+    .forEach((v,i)=>{
+        lista.innerHTML += `
+        <div class="wine">
+            <h3>${v.nome}</h3>
+            <p>Safra ${v.safra || ""} · ${v.pais || ""} · ${v.uva || ""}</p>
+            <p>Quantidade: ${v.quantidade || 0} · Valor: R$ ${v.valor || 0}</p>
+            <p>${v.comentario || ""}</p>
+            ${Number(v.quantidade)<=1 ? "<div class='alerta'>⚠️ Estoque baixo</div>" : ""}
+            <button onclick="darBaixa(${i})">Dar baixa</button>
+            <button onclick="editarVinho(${i})">Editar</button>
+            <button onclick="excluirVinho(${i})">Excluir</button>
+        </div>`;
+    });
 }
 
 function setFiltro(f){
-  filtroAtual = f;
-
-  ["fTodos","fFavoritos","fBaixo"].forEach(id=>{
-    document.getElementById(id).classList.remove("ativo");
-  });
-
-  if(f === "todos") document.getElementById("fTodos").classList.add("ativo");
-  if(f === "favoritos") document.getElementById("fFavoritos").classList.add("ativo");
-  if(f === "baixo") document.getElementById("fBaixo").classList.add("ativo");
-
-  renderVinhos();
-    function renderVinhos(){
-  let busca = (document.getElementById("busca")?.value || "").toLowerCase();
-  let lista = document.getElementById("listaVinhos");
-  lista.innerHTML = "";
-
-  vinhos
-  .filter(v=>{
-    let okBusca =
-      (v.nome || "").toLowerCase().includes(busca) ||
-      (v.pais || "").toLowerCase().includes(busca) ||
-      (v.uva || "").toLowerCase().includes(busca);
-
-    let okFiltro =
-      filtroAtual === "todos" ||
-      (filtroAtual === "favoritos" && v.favorito) ||
-      (filtroAtual === "baixo" && Number(v.quantidade) <= 1);
-
-    return okBusca && okFiltro;
-  })
-  .forEach((v,i)=>{
-    lista.innerHTML += `
-      <div class="wine">
-        ${fotoHTML(v)}
-        <h3>${v.nome}</h3>
-        <p>Safra ${v.safra || ""} · ${v.pais || ""} · ${v.uva || ""}</p>
-        <p>Qtd: ${v.quantidade} · R$ ${v.valor} · <span class="stars">${estrelas(v.nota)}</span></p>
-        ${Number(v.quantidade)<=1 ? '<div class="alerta">⚠️ Estoque baixo</div>' : ''}
-        <p>${v.comentario || ""}</p>
-        <span class="badge">${v.favorito ? "Não pode faltar" : "Adega"}</span>
-        ${v.recompra ? '<span class="badge">Recomprar</span>' : ''}
-        <br><br>
-        <button onclick="abrirDetalhe(${i})">Ver ficha</button>
-        <button onclick="darBaixa(${i})">Dar baixa</button>
-        <button onclick="editarVinho(${i})">Editar</button>
-        <button onclick="excluirVinho(${i})">Excluir</button>
-        <div class="clear"></div>
-      </div>
-    `;
-  });
+    filtroAtual = f;
+    renderVinhos();
 }
+// ====================================
+// RANKING
+// ====================================
 
 function renderRanking(){
-  let lista = document.getElementById("rankingLista");
-  lista.innerHTML = "";
 
-  [...vinhos]
-  .sort((a,b)=>Number(b.nota || 0) - Number(a.nota || 0))
-  .forEach(v=>{
-    lista.innerHTML += `
-      <div class="wine">
-        ${fotoHTML(v)}
-        <h3>${v.nome}</h3>
-        <p>${v.pais || ""} · ${v.uva || ""}</p>
-        <p class="stars">${estrelas(v.nota)}</p>
-        <span class="badge">${v.favorito ? "Não pode faltar" : "Avaliado"}</span>
-        <div class="clear"></div>
-      </div>
-    `;
-  });
+    const lista = document.getElementById("rankingLista");
+    if(!lista) return;
+
+    lista.innerHTML = "";
+
+    [...vinhos]
+    .sort((a,b)=>(b.nota||0)-(a.nota||0))
+    .forEach(v=>{
+        lista.innerHTML += `
+        <div class="wine">
+            <h3>${v.nome}</h3>
+            <p>${v.pais || ""} · ${v.uva || ""}</p>
+            <p>${"⭐".repeat(v.nota || 0)}</p>
+            <span class="badge">${v.recompra ? "Recomprar" : "Adega"}</span>
+        </div>`;
+    });
 }
 
-function abrirDetalhe(i){
-  let v = vinhos[i];
+// ====================================
+// FORMULÁRIO
+// ====================================
 
-  document.getElementById("detalheVinho").innerHTML = `
-    <div class="box">
-      ${fotoHTML(v)}
-      <h2>${v.nome}</h2>
-      <p class="stars">${estrelas(v.nota)}</p>
-      <p><b>Safra:</b> ${v.safra || ""}</p>
-      <p><b>País:</b> ${v.pais || ""}</p>
-      <p><b>Uva:</b> ${v.uva || ""}</p>
-      <p><b>Quantidade:</b> ${v.quantidade || 0}</p>
-      <p><b>Valor pago:</b> R$ ${v.valor || 0}</p>
-      <p><b>Janela ideal:</b> ${v.janela || "Não informada"}</p>
-      <p><b>Harmonização:</b> ${v.harmonizacao || "Não informada"}</p>
-      <p><b>Comentário:</b> ${v.comentario || "Sem comentário"}</p>
-      <span class="badge">${v.favorito ? "Não pode faltar" : "Adega"}</span>
-      ${v.recompra ? '<span class="badge">Recomprar</span>' : ''}
-      <br><br>
-      <button onclick="darBaixa(${i})">Dar baixa</button>
-      <button onclick="editarVinho(${i})">Editar</button>
-      <div class="clear"></div>
-    </div>
-  `;
+function salvarFormulario(){
 
-  abrirTela("detalhe");
-    function salvarFormulario(){
-  let i = document.getElementById("editIndex").value;
-  let nome = normalizarNome(document.getElementById("nome").value);
-  let quantidade = Number(document.getElementById("quantidade").value);
-  let valor = Number(document.getElementById("valor").value);
+    const vinho = {
+        nome: document.getElementById("nome").value,
+        safra: document.getElementById("safra").value,
+        pais: document.getElementById("pais").value,
+        uva: document.getElementById("uva").value,
+        quantidade: Number(document.getElementById("quantidade").value),
+        valor: Number(document.getElementById("valor").value),
+        janela: document.getElementById("janela").value,
+        harmonizacao: document.getElementById("harmonizacao").value,
+        comentario: document.getElementById("comentario").value,
+        nota: Number(document.getElementById("nota").value),
+        favorito: document.getElementById("favorito").value === "true",
+        recompra: document.getElementById("recompra").value === "true"
+    };
 
-  if(!nome){ alert("Digite o nome do vinho."); return; }
-  if(!quantidade || quantidade < 1){ alert("Informe a quantidade."); return; }
-  if(!valor || valor < 1){ alert("Informe o valor pago por garrafa."); return; }
+    if(!vinho.nome){
+        alert("Digite o nome do vinho.");
+        return;
+    }
 
-  let vinho = {
-    nome:nome,
-    safra:document.getElementById("safra").value,
-    pais:document.getElementById("pais").value,
-    uva:document.getElementById("uva").value,
-    quantidade:quantidade,
-    valor:valor,
-    janela:document.getElementById("janela").value,
-    harmonizacao:document.getElementById("harmonizacao").value,
-    comentario:document.getElementById("comentario").value,
-    nota:Number(document.getElementById("nota").value),
-    favorito:document.getElementById("favorito").value === "true",
-    recompra:document.getElementById("recompra").value === "true",
-    foto:document.getElementById("fotoBase64").value
-  };
+    if(!vinho.quantidade || vinho.quantidade < 1){
+        alert("Informe a quantidade.");
+        return;
+    }
 
-  if(i === "") vinhos.push(vinho);
-  else vinhos[Number(i)] = vinho;
+    if(!vinho.valor || vinho.valor < 1){
+        alert("Informe o valor pago por garrafa.");
+        return;
+    }
 
-  salvarDados();
-  limparFormulario();
-  atualizarTudo();
-  abrirTela("adega");
+    vinhos.push(vinho);
+    salvarDados();
+    limparFormulario();
+    atualizarTudo();
+    abrirTela("adega");
 }
-
-function editarVinho(i){
-  let v = vinhos[i];
-
-  document.getElementById("editIndex").value = i;
-  document.getElementById("tituloForm").innerText = "Editar Vinho";
-
-  ["nome","safra","pais","uva","quantidade","valor","janela","harmonizacao","comentario","nota"].forEach(c=>{
-    document.getElementById(c).value = v[c] || "";
-  });
-
-  document.getElementById("favorito").value = String(v.favorito);
-  document.getElementById("recompra").value = String(v.recompra);
-  document.getElementById("fotoBase64").value = v.foto || v.imagem || "";
-
-  let preview = document.getElementById("fotoPreview");
-  if(v.foto || v.imagem){
-    preview.src = v.foto || v.imagem;
-    preview.classList.remove("hidden");
-  }else{
-    preview.classList.add("hidden");
-  }
-
-  abrirTela("cadastro");
-}
-
 function limparFormulario(){
-  document.getElementById("editIndex").value = "";
-  document.getElementById("tituloForm").innerText = "Adicionar Vinho";
+    ["nome","safra","pais","uva","quantidade","valor","janela","harmonizacao","comentario"].forEach(id=>{
+        document.getElementById(id).value = "";
+    });
 
-  ["nome","safra","pais","uva","quantidade","valor","janela","harmonizacao","comentario","fotoBase64"].forEach(c=>{
-    document.getElementById(c).value = "";
-  });
-
-  document.getElementById("nota").value = "5";
-  document.getElementById("favorito").value = "false";
-  document.getElementById("recompra").value = "false";
-  document.getElementById("fotoPreview").classList.add("hidden");
-  document.getElementById("fotoInput").value = "";
+    document.getElementById("nota").value = "5";
+    document.getElementById("favorito").value = "false";
+    document.getElementById("recompra").value = "false";
 }
 
 function darBaixa(i){
-  if(Number(vinhos[i].quantidade) > 0){
-    vinhos[i].quantidade--;
-  }
-  salvarDados();
-  atualizarTudo();
-  abrirTela("adega");
+    if(vinhos[i].quantidade > 0){
+        vinhos[i].quantidade--;
+    }
+
+    salvarDados();
+    atualizarTudo();
+}
+
+function editarVinho(i){
+    const v = vinhos[i];
+
+    document.getElementById("nome").value = v.nome || "";
+    document.getElementById("safra").value = v.safra || "";
+    document.getElementById("pais").value = v.pais || "";
+    document.getElementById("uva").value = v.uva || "";
+    document.getElementById("quantidade").value = v.quantidade || "";
+    document.getElementById("valor").value = v.valor || "";
+    document.getElementById("janela").value = v.janela || "";
+    document.getElementById("harmonizacao").value = v.harmonizacao || "";
+    document.getElementById("comentario").value = v.comentario || "";
+    document.getElementById("nota").value = v.nota || "5";
+    document.getElementById("favorito").value = String(v.favorito);
+    document.getElementById("recompra").value = String(v.recompra);
+
+    excluirVinho(i);
+    abrirTela("cadastro");
 }
 
 function excluirVinho(i){
-  if(confirm("Excluir este vinho?")){
-    vinhos.splice(i,1);
-    salvarDados();
-    atualizarTudo();
-    abrirTela("adega");
-  }
+    if(confirm("Excluir este vinho?")){
+        vinhos.splice(i,1);
+        salvarDados();
+        atualizarTudo();
+    }
 }
 
 function gerarBackup(){
-  document.getElementById("backup").value = JSON.stringify(vinhos,null,2);
+    const backup = document.getElementById("backup");
+    if(backup){
+        backup.value = JSON.stringify(vinhos,null,2);
+    }
+}
+
+function atualizarIA(){
+    const texto = document.getElementById("textoIA");
+    if(!texto) return;
+
+    texto.innerText =
+    "Seu perfil favorece vinhos equilibrados, aromáticos e com boa recompra. Priorize Alma Negra, Luigi Bosca, Catena e Susana Balbo.";
+}
+
+function abrirTela(id){
+    document.querySelectorAll("section").forEach(s=>s.classList.add("hidden"));
+    document.getElementById(id).classList.remove("hidden");
+    atualizarTudo();
+}
+
+function atualizarTudo(){
+    atualizarDashboard();
+    renderVinhos();
+    renderRanking();
+    atualizarIA();
 }
 
 atualizarTudo();
-    
-}
-    
-}
