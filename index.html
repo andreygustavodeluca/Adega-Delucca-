@@ -30,7 +30,7 @@
 <div class="box" id="totalPaises"></div>
 
 <h2>🍷 Sugestão de hoje</h2>
-<div class="wine" id="sugestaoHoje"></div>
+<div id="sugestaoHoje"></div>
 
 <h2>💾 Backup</h2>
 <div class="box">
@@ -41,7 +41,12 @@
 
 <section id="adega" class="hidden">
 <h2>Minha Adega</h2>
-<input id="busca" placeholder="Buscar vinho, país ou uva..." oninput="renderVinhos()">
+
+<input 
+type="text" 
+id="busca" 
+placeholder="Pesquisar vinho, país, uva ou safra..." 
+onkeyup="renderVinhos()">
 
 <div class="filtros">
 <button id="fTodos" class="ativo" onclick="setFiltro('todos')">Todos</button>
@@ -53,15 +58,14 @@
 </section>
 
 <section id="cadastro" class="hidden">
-<h2 id="tituloForm">Adicionar Vinho</h2>
+<h2>Adicionar Vinho</h2>
 
 <div class="box">
 <label>📷 Foto do rótulo / ícone</label>
-<input id="fotoInput" type="file" accept="image/*" capture="environment" onchange="carregarFoto(event)">
-<img id="fotoPreview" class="foto-preview hidden">
+<input id="fotoInput" type="file" accept="image/*" capture="environment">
 
 <div class="helper">
-Preencha nome, país e uva. Depois toque em <b>✨ Gerar recomendações</b>.
+Digite o nome do vinho e toque em <b>📚 Buscar no Catálogo Delucca</b> ou use <b>✨ Gerar recomendações</b>.
 </div>
 
 <input id="editIndex" type="hidden">
