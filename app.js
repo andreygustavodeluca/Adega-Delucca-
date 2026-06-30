@@ -47,9 +47,6 @@ function atualizarDashboard(){
     const e = document.getElementById("estoqueBaixo");
     if(e) e.innerText = estoqueBaixo();
 
-    const e = document.getElementById("estoqueBaixo");
-if(e) e.innerText = estoqueBaixo();
-
 const totalPaises = document.getElementById("totalPaises");
 if(totalPaises){
     let paises = {};
@@ -66,7 +63,6 @@ if(totalPaises){
 
 atualizarSugestao();
 
-    atualizarSugestao();
 }
 
 function atualizarSugestao(){
