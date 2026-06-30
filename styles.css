@@ -1,0 +1,21 @@
+body{margin:0;background:#0f0f10;color:#fff;font-family:Arial,Helvetica,sans-serif;padding-bottom:90px}
+.header{background:linear-gradient(135deg,#76001f,#3b0713);padding:30px 18px;text-align:center}
+.header h1{margin:0;font-size:36px}.header p{color:#f3d3dc;margin:8px 0 0}
+.container{padding:20px}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.card,.wine,.box{background:#1d1d1f;border-radius:22px;padding:18px;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+.card h3{margin:0;color:#ccc;font-size:15px}.card p{color:#d4a33f;font-size:28px;font-weight:bold;margin:10px 0 0}
+h2{margin-top:28px}.wine{margin-bottom:14px;border-left:5px solid #d4a33f}.wine h3{margin:0;font-size:21px}.wine p{color:#ccc}
+.badge{background:#8a0f35;padding:7px 12px;border-radius:999px;display:inline-block;margin-top:5px}
+.alerta{background:#3a1f00;color:#ffd27a;padding:10px;border-radius:12px;margin-top:8px}
+button{background:#970f3d;color:white;border:0;border-radius:16px;padding:13px;font-size:15px;font-weight:bold;margin:5px 4px 5px 0}
+input,select,textarea{width:100%;box-sizing:border-box;padding:14px;margin:7px 0 12px;border-radius:12px;border:1px solid #333;background:#111;color:white;font-size:16px}
+textarea{min-height:85px}.hidden{display:none}.stars{color:#d4a33f;font-size:19px}
+.foto-preview{width:100%;max-height:260px;object-fit:cover;border-radius:18px;margin:10px 0 16px;background:#111}
+.foto-mini{width:82px;height:108px;object-fit:cover;border-radius:14px;background:#111;float:right;margin-left:12px}
+.foto-placeholder{width:82px;height:108px;border-radius:14px;background:#111;display:flex;align-items:center;justify-content:center;font-size:40px;float:right;margin-left:12px}
+.helper{background:#271018;border:1px solid #8a0f35;border-radius:18px;padding:14px;margin:12px 0;color:#f3d7df}
+.nav{position:fixed;bottom:0;left:0;right:0;background:#18181a;display:grid;grid-template-columns:repeat(5,1fr);border-top:1px solid #333}
+.nav button{background:none;border:0;border-radius:0;font-size:13px;margin:0;padding:10px 2px}
+.filtros button{background:#333}.filtros .ativo{background:#970f3d}
+.clear{clear:both}
+@media(max-width:700px){.grid{grid-template-columns:1fr}.header h1{font-size:31px}}
