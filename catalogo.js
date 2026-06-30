@@ -12,7 +12,7 @@ comentario: "Blend elegante, aromático e muito alinhado ao perfil Delucca.",
 nota: 5,
 recomprar: true,
 estoqueMinimo: 2,
-imagem: "https://images.vivino.com/thumbs/placeholder.png"
+imagem: foto:"https://images.vivino.com/thumbs/7J5P7mVRTuS8s0QdG3RrYQ_pb_x600.png"
 }
 
 ];
