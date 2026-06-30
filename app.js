@@ -47,6 +47,25 @@ function atualizarDashboard(){
     const e = document.getElementById("estoqueBaixo");
     if(e) e.innerText = estoqueBaixo();
 
+    const e = document.getElementById("estoqueBaixo");
+if(e) e.innerText = estoqueBaixo();
+
+const totalPaises = document.getElementById("totalPaises");
+if(totalPaises){
+    let paises = {};
+
+    vinhos.forEach(v=>{
+        let pais = v.pais || "Não informado";
+        paises[pais] = (paises[pais] || 0) + Number(v.quantidade || 0);
+    });
+
+    totalPaises.innerHTML = Object.entries(paises)
+        .map(([pais,qtd])=>`<span class="badge">${pais}: ${qtd}</span>`)
+        .join(" ");
+}
+
+atualizarSugestao();
+
     atualizarSugestao();
 }
 
