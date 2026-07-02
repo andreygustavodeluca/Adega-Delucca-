@@ -11,36 +11,46 @@
 
 <header class="header">
 <h1>🍷 ADEGA DELUCCA</h1>
-<p>Gestão inteligente da sua adega pessoal</p>
+<p>Seu sommelier pessoal</p>
 </header>
 
 <main class="container">
 
 <section id="inicio">
-<h2>Painel Executivo</h2>
 
+<h2>Boa noite, Andrey</h2>
+
+<div class="hero">
+<h3>🍾 Sua Adega Hoje</h3>
 <div class="grid">
-<div class="card"><h3>🍾 Garrafas</h3><p id="totalGarrafas">0</p></div>
-<div class="card"><h3>💰 Patrimônio</h3><p id="valorTotal">R$ 0</p></div>
-<div class="card"><h3>⭐ Favoritos</h3><p id="favoritos">0</p></div>
-<div class="card"><h3>⚠️ Estoque baixo</h3><p id="estoqueBaixo">0</p></div>
+<div class="card"><h3>Garrafas</h3><p id="totalGarrafas">0</p></div>
+<div class="card"><h3>Patrimônio</h3><p id="valorTotal">R$ 0</p></div>
+<div class="card"><h3>Favoritos</h3><p id="favoritos">0</p></div>
+<div class="card"><h3>Estoque baixo</h3><p id="estoqueBaixo">0</p></div>
+</div>
 </div>
 
-<h2>🌎 Total por país</h2>
+<h2>🍷 Hoje eu abriria</h2>
+<div id="sugestaoHoje"></div>
+
+<h2>🌎 Diversidade da Adega</h2>
 <div class="box" id="totalPaises"></div>
 
-<h2>🍷 Sugestão de hoje</h2>
-<div id="sugestaoHoje"></div>
+<h2>🤖 Conselho Delucca</h2>
+<div class="box">
+<p id="textoIA"></p>
+</div>
 
 <h2>💾 Backup</h2>
 <div class="box">
 <button onclick="gerarBackup()">Gerar backup</button>
 <textarea id="backup" placeholder="Seu backup aparecerá aqui"></textarea>
 </div>
+
 </section>
 
 <section id="adega" class="hidden">
-<h2>Minha Adega</h2>
+<h2>🍾 Minhas Garrafas</h2>
 
 <input 
 type="text" 
@@ -58,32 +68,32 @@ onkeyup="renderVinhos()">
 </section>
 
 <section id="cadastro" class="hidden">
-<h2>Adicionar Vinho</h2>
+<h2>➕ Adicionar Garrafa</h2>
 
 <div class="box">
-<label>📷 Foto do rótulo / ícone</label>
+<label>📷 Foto da garrafa</label>
 <input id="fotoInput" type="file" accept="image/*" capture="environment">
 
 <div class="helper">
-Digite o nome do vinho e toque em <b>📚 Buscar no Catálogo Delucca</b> ou use <b>✨ Gerar recomendações</b>.
+Digite o nome do vinho e toque em <b>📚 Buscar no Catálogo</b>.  
+A ficha técnica vem do catálogo. A safra vem da garrafa.
 </div>
 
 <input id="editIndex" type="hidden">
 <input id="fotoBase64" type="hidden">
 
 <input id="nome" placeholder="Nome do vinho">
-<input id="safra" placeholder="Safra">
+<button onclick="buscarNoCatalogo()">📚 Buscar no Catálogo Delucca</button>
+
+<input id="safra" placeholder="Safra da garrafa">
+<input id="quantidade" type="number" placeholder="Quantidade">
+<input id="valor" type="number" placeholder="Valor pago por garrafa">
+
 <input id="pais" placeholder="País">
 <input id="uva" placeholder="Uva">
-<input id="quantidade" type="number" placeholder="Quantidade obrigatória">
-<input id="valor" type="number" placeholder="Valor pago por garrafa obrigatório">
-
-<button onclick="buscarNoCatalogo()">📚 Buscar no Catálogo Delucca</button>
-<button onclick="gerarRecomendacoes()">✨ Gerar recomendações</button>
-
-<input id="janela" placeholder="Janela ideal de consumo">
+<input id="janela" placeholder="Janela ideal">
 <input id="harmonizacao" placeholder="Harmonização">
-<textarea id="comentario" placeholder="Comentário pessoal"></textarea>
+<textarea id="comentario" placeholder="Comentário Delucca"></textarea>
 
 <select id="nota">
 <option value="5">Nota 5 ⭐⭐⭐⭐⭐</option>
@@ -99,40 +109,40 @@ Digite o nome do vinho e toque em <b>📚 Buscar no Catálogo Delucca</b> ou use
 </select>
 
 <select id="recompra">
-<option value="false">Recomprar? Não definido</option>
+<option value="false">Recomprar? Não</option>
 <option value="true">Recomprar? Sim</option>
 </select>
 
-<button onclick="salvarFormulario()">Salvar vinho</button>
+<button onclick="salvarFormulario()">Salvar garrafa</button>
 <button onclick="limparFormulario()">Limpar</button>
 </div>
 </section>
 
 <section id="ranking" class="hidden">
-<h2>Ranking Delucca</h2>
+<h2>⭐ Ranking Delucca</h2>
 <div id="rankingLista"></div>
 </section>
 
 <section id="ia" class="hidden">
-<h2>Sommelier IA</h2>
+<h2>🤖 Sommelier IA</h2>
 <div class="wine">
-<h3>🤖 Conselho Delucca</h3>
-<p id="textoIA"></p>
-<span class="badge">Baseado no seu perfil</span>
+<h3>Conselho Delucca</h3>
+<p id="textoIA2">Em breve a IA analisará sua adega, seu perfil e suas próximas compras.</p>
+<span class="badge">Perfil Delucca</span>
 </div>
 </section>
 
 <section id="detalhe" class="hidden">
-<h2>Ficha do Vinho</h2>
+<h2>🍷 Ficha da Garrafa</h2>
 <div id="detalheVinho"></div>
 </section>
 
 </main>
 
 <nav class="nav">
-<button onclick="abrirTela('inicio')">🏠<br>Início</button>
-<button onclick="abrirTela('adega')">🍷<br>Adega</button>
-<button onclick="abrirTela('cadastro')">➕<br>Novo</button>
+<button onclick="abrirTela('inicio')">🏠<br>Hoje</button>
+<button onclick="abrirTela('adega')">🍾<br>Garrafas</button>
+<button onclick="abrirTela('cadastro')">➕<br>Nova</button>
 <button onclick="abrirTela('ranking')">⭐<br>Ranking</button>
 <button onclick="abrirTela('ia')">🤖<br>IA</button>
 </nav>
