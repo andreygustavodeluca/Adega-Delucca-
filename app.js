@@ -129,14 +129,23 @@ function atualizarDashboard(){
 
   atualizarSugestao();
 }
-
 function atualizarSugestao(){
+
   const div = document.getElementById("sugestaoHoje");
+
   if(!div) return;
 
-  if(vinhos.length === 0){
-    div.innerHTML = `<div class="wine"><h3>Sua adega está vazia</h3></div>`;
+  if(vinhos.length===0){
+
+    div.innerHTML = `
+      <div class="wine">
+        <h3>Sua adega está vazia</h3>
+        <p>Cadastre sua primeira garrafa.</p>
+      </div>
+    `;
+
     return;
+
   }
 
   const melhor = [...vinhos]
@@ -147,14 +156,36 @@ function atualizarSugestao(){
 
   div.innerHTML = `
     <div class="wine">
+
       ${fotoHTML(melhor)}
+
       <h3>${melhor.nome}</h3>
+
+      <p><b>Safra:</b> ${melhor.safra || "-"}</p>
+
+      <p>🌎 ${melhor.pais || "-"}</p>
+
+      <p>🍇 ${melhor.uva || "-"}</p>
+
+      <p>⭐ ${estrelas(melhor.nota)}</p>
+
       <p>${melhor.comentario || ""}</p>
-      <span class="badge">${melhor.janela || melhor.janelaBase || ""}</span>
+
+      <span class="badge">
+        Janela: ${melhor.janela || melhor.janelaBase || "-"}
+      </span>
+
+      <span class="badge">
+        ${melhor.harmonizacao || "Sem harmonização cadastrada"}
+      </span>
+
       <div class="clear"></div>
+
     </div>
   `;
+
 }
+
 
 function buscarNoCatalogo(){
   const nome = document.getElementById("nome").value;
