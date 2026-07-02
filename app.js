@@ -45,16 +45,80 @@ function fotoHTML(v){
 }
 
 function atualizarDashboard(){
-  document.getElementById("totalGarrafas").innerText = totalGarrafas();
-  document.getElementById("valorTotal").innerText = "R$ " + valorTotal().toLocaleString("pt-BR");
-  document.getElementById("favoritos").innerText = vinhos.filter(v=>v.favorito).length;
-  document.getElementById("estoqueBaixo").innerText = vinhos.filter(v=>Number(v.quantidade)<=1).length;
 
+  document.getElementById("totalGarrafas").innerText = totalGarrafas();
+
+  document.getElementById("valorTotal").innerText =
+    "R$ " + valorTotal().toLocaleString("pt-BR");
+
+  document.getElementById("favoritos").innerText =
+    vinhos.filter(v => v.favorito).length;
+
+  document.getElementById("estoqueBaixo").innerText =
+    vinhos.filter(v => Number(v.quantidade) <= 1).length;
+
+  // Países únicos
   const paises = {};
-  vinhos.forEach(v=>{
+
+  // Uvas únicas
+  const uvas = {};
+
+  vinhos.forEach(v => {
+
     const pais = v.pais || "Não informado";
-    paises[pais] = (paises[pais] || 0) + Number(v.quantidade||0);
+    paises[pais] = (paises[pais] || 0) + Number(v.quantidade || 0);
+
+    const uva = v.uva || "Não informada";
+    uvas[uva] = true;
+
   });
+
+  const totalPaises = Object.keys(paises).length;
+  const totalUvas = Object.keys(uvas).length;
+
+  const elPaisesNumero = document.getElementById("totalPaisesNumero");
+  if(elPaisesNumero)
+    elPaisesNumero.innerText = totalPaises;
+
+  const elUvasNumero = document.getElementById("totalUvasNumero");
+  if(elUvasNumero)
+    elUvasNumero.innerText = totalUvas;
+
+  const elPaises = document.getElementById("totalPaises");
+
+  if(elPaises){
+
+    elPaises.innerHTML = Object.entries(paises)
+      .map(([pais,qtd]) =>
+        `<span class="badge">${pais}: ${qtd} garrafas</span>`
+      )
+      .join(" ");
+
+  }
+
+  // Valor médio por garrafa
+  const media =
+    totalGarrafas() > 0
+      ? valorTotal() / totalGarrafas()
+      : 0;
+
+  const alertas = document.getElementById("alertasHoje");
+
+  if(alertas){
+
+    alertas.innerHTML = `
+      <p>🌎 Países representados: <b>${totalPaises}</b></p>
+      <p>🍇 Uvas diferentes: <b>${totalUvas}</b></p>
+      <p>💵 Valor médio por garrafa:
+      <b>R$ ${media.toFixed(2)}</b></p>
+    `;
+
+  }
+
+  atualizarSugestao();
+
+}
+
 
   const totalPaises = Object.keys(paises).length;
 
