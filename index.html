@@ -76,8 +76,15 @@
 A ficha técnica vem do Catálogo Mestre. A safra, quantidade, valor e foto pertencem à sua garrafa.
 </div>
 
+<<button onclick="abrirScanner()">📷 Scanner Delucca</button>
+
 <input id="nome" placeholder="Nome do vinho">
 <button onclick="buscarNoCatalogo()">📚 Buscar no Catálogo</button>
+
+<div id="scannerBox" class="scanner-box hidden">
+  <p><b>Scanner Delucca iniciado.</b></p>
+  <p>Agora selecione ou tire uma foto da garrafa. Em breve a IA fará a leitura automática do rótulo e da safra.</p>
+</div>
 
 <input id="safra" placeholder="Safra da garrafa">
 <input id="quantidade" type="number" placeholder="Quantidade">
