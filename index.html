@@ -91,7 +91,14 @@ A ficha técnica vem do Catálogo Mestre. A safra, quantidade, valor e foto pert
 <input id="valor" type="number" placeholder="Valor pago por garrafa">
 
 <label><b>📷 Foto da Garrafa</b></label>
-<input type="file" id="fotoArquivo" accept="image/*" onchange="carregarFoto(event)">
+  <input
+  type="file"
+  id="fotoArquivo"
+  accept="image/*"
+  capture="environment"
+  onchange="carregarFoto(event)"
+  hidden
+>
 <input type="hidden" id="fotoBase64">
 <img id="previewFoto" class="preview-foto">
 
