@@ -20,7 +20,6 @@ body{
 
 .header h1{
   font-size:34px;
-  letter-spacing:.5px;
 }
 
 .header p{
@@ -45,6 +44,11 @@ h2{
   border:1px solid rgba(212,175,55,.18);
 }
 
+.muted{
+  color:#bbb;
+  margin-top:6px;
+}
+
 .grid{
   display:grid;
   grid-template-columns:repeat(2,1fr);
@@ -62,7 +66,6 @@ h2{
 .card h3{
   font-size:14px;
   color:#c9c9c9;
-  font-weight:600;
 }
 
 .card p{
@@ -177,6 +180,14 @@ textarea{
   border:1px solid rgba(255,255,255,.08);
 }
 
+.preview-foto{
+  width:140px;
+  margin-top:12px;
+  border-radius:14px;
+  display:none;
+  border:1px solid rgba(255,255,255,.12);
+}
+
 .clear{
   clear:both;
 }
@@ -227,6 +238,12 @@ textarea{
 
 .hidden{
   display:none;
+}
+
+hr{
+  border:0;
+  border-top:1px solid rgba(255,255,255,.1);
+  margin:16px 0;
 }
 
 @media(max-width:700px){
