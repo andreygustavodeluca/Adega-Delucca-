@@ -475,6 +475,32 @@ function renderRanking(){
     });
 }
 
+function carregarFoto(event){
+
+  const arquivo = event.target.files[0];
+
+  if(!arquivo) return;
+
+  const reader = new FileReader();
+
+  reader.onload = function(e){
+
+    const base64 = e.target.result;
+
+    document.getElementById("fotoBase64").value = base64;
+
+    const preview = document.getElementById("previewFoto");
+
+    preview.src = base64;
+
+    preview.style.display = "block";
+
+  };
+
+  reader.readAsDataURL(arquivo);
+
+}
+
 function salvarFormulario(){
   const nome = normalizarNome(document.getElementById("nome").value);
   const item = encontrarCatalogo(nome);
