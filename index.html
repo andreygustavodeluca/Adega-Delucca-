@@ -55,11 +55,7 @@
 <section id="adega" class="hidden">
 <h2>🍾 Minhas Garrafas</h2>
 
-<input 
-type="text" 
-id="busca" 
-placeholder="Pesquisar vinho, país, uva ou safra..." 
-onkeyup="renderVinhos()">
+<input type="text" id="busca" placeholder="Pesquisar vinho, país, uva ou safra..." oninput="renderVinhos()">
 
 <div class="filtros">
 <button onclick="setFiltro('todos')">Todos</button>
@@ -77,8 +73,7 @@ onkeyup="renderVinhos()">
 
 <div class="helper">
 <b>Nova arquitetura:</b><br>
-A ficha técnica vem do Catálogo Mestre.  
-A safra, quantidade e valor pertencem à sua garrafa.
+A ficha técnica vem do Catálogo Mestre. A safra, quantidade, valor e foto pertencem à sua garrafa.
 </div>
 
 <input id="nome" placeholder="Nome do vinho">
@@ -88,34 +83,10 @@ A safra, quantidade e valor pertencem à sua garrafa.
 <input id="quantidade" type="number" placeholder="Quantidade">
 <input id="valor" type="number" placeholder="Valor pago por garrafa">
 
-  <input id="safra" placeholder="Safra da garrafa">
-
-<input id="quantidade" type="number" placeholder="Quantidade">
-
-<input id="valor" type="number" placeholder="Valor pago por garrafa">
-
 <label><b>📷 Foto da Garrafa</b></label>
-
-<input
-type="file"
-id="fotoArquivo"
-accept="image/*"
-onchange="carregarFoto(event)">
-
-<input
-type="hidden"
-id="fotoBase64">
-
-<img
-id="previewFoto"
-style="width:140px;
-margin-top:12px;
-border-radius:12px;
-display:none;">
-
-<input id="pais" placeholder="País">
-
-<input id="uva" placeholder="Uva">
+<input type="file" id="fotoArquivo" accept="image/*" onchange="carregarFoto(event)">
+<input type="hidden" id="fotoBase64">
+<img id="previewFoto" class="preview-foto">
 
 <input id="pais" placeholder="País">
 <input id="uva" placeholder="Uva">
