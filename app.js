@@ -107,14 +107,46 @@ function buscarNoCatalogo(){
 }
 
 function carregarFoto(event){
- const arq=event.target.files[0]; if(!arq)return;
- const reader=new FileReader();
- reader.onload=e=>{
-  document.getElementById("fotoBase64").value=e.target.result;
-  const p=document.getElementById("previewFoto");
-  p.src=e.target.result;p.style.display="block";
- };
- reader.readAsDataURL(arq);
+
+    const arquivo = event.target.files[0];
+
+    if(!arquivo) return;
+
+    document.getElementById("scannerStatus").innerHTML =
+        "🧠 Analisando imagem...";
+
+    const reader = new FileReader();
+
+    reader.onload = function(e){
+
+        const base64 = e.target.result;
+
+        document.getElementById("fotoBase64").value = base64;
+
+        const preview = document.getElementById("previewFoto");
+
+        preview.src = base64;
+        preview.style.display = "block";
+
+        setTimeout(function(){
+
+            document.getElementById("scannerStatus").innerHTML =
+                "✅ Imagem carregada.";
+
+            document.getElementById("scannerResultado").innerHTML = `
+                <div class="wine">
+                    <h3>🍷 Scanner Delucca</h3>
+                    <p>A próxima versão utilizará IA para reconhecer automaticamente o rótulo e a safra.</p>
+                    <p>Agora toque em <b>📚 Buscar no Catálogo</b> para carregar a ficha técnica.</p>
+                </div>
+            `;
+
+        },1800);
+
+    };
+
+    reader.readAsDataURL(arquivo);
+
 }
 
 function salvarFormulario(){
