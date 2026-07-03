@@ -18,17 +18,21 @@ function normalizarNome(n){
 }
 function abrirScanner(){
 
-  const box = document.getElementById("scannerBox");
+    const box=document.getElementById("scannerBox");
 
-  if(box){
     box.classList.remove("hidden");
-  }
 
-  const input = document.getElementById("fotoArquivo");
+    document.getElementById("scannerStatus").innerHTML=
+    "⏳ Preparando câmera...";
 
-  if(input){
-    input.click();
-  }
+    setTimeout(()=>{
+
+        document.getElementById("scannerStatus").innerHTML=
+        "📸 Tire uma foto da garrafa.";
+
+        document.getElementById("fotoArquivo").click();
+
+    },700);
 
 }
 function encontrarCatalogo(nome){
