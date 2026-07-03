@@ -221,41 +221,98 @@ function gerarRecomendacoes(){
   alert("Use o Catálogo Delucca ou preencha manualmente.");
 }
 
+
 function renderVinhos(){
+
   const lista = document.getElementById("listaVinhos");
   if(!lista) return;
 
-  const busca = (document.getElementById("busca")?.value || "").toLowerCase();
+  const busca =
+    (document.getElementById("busca")?.value || "")
+      .toLowerCase();
+
   lista.innerHTML = "";
 
   vinhos
     .filter(v=>{
-      const texto = `${v.nome} ${v.pais} ${v.uva} ${v.safra}`.toLowerCase();
+
+      const texto =
+        `${v.nome} ${v.pais} ${v.uva} ${v.safra}`
+        .toLowerCase();
+
       const filtro =
-        filtroAtual === "todos" ||
-        (filtroAtual === "favoritos" && v.favorito) ||
-        (filtroAtual === "baixo" && Number(v.quantidade)<=1);
+        filtroAtual==="todos" ||
+        (filtroAtual==="favoritos" && v.favorito) ||
+        (filtroAtual==="baixo" && Number(v.quantidade)<=1);
+
       return texto.includes(busca) && filtro;
+
     })
+
     .forEach((v,i)=>{
+
       lista.innerHTML += `
-        <div class="wine">
-          ${fotoHTML(v)}
-          <h3>${v.nome}</h3>
-          <p>Safra ${v.safra || "-"} • ${v.pais || "-"} • ${v.uva || "-"}</p>
-          <p>Quantidade: ${v.quantidade || 0}</p>
-          <p>Valor: R$ ${v.valor || 0}</p>
-          ${Number(v.quantidade)<=1 ? "<div class='alerta'>⚠️ Estoque baixo</div>" : ""}
-          <span class="badge">${v.recompra ? "Recomprar" : "Adega"}</span>
-          <br><br>
-          <button onclick="abrirDetalhe(${i})">Ver ficha</button>
-          <button onclick="darBaixa(${i})">Dar baixa</button>
-          <button onclick="editarVinho(${i})">Editar</button>
-          <button onclick="excluirVinho(${i})">Excluir</button>
-          <div class="clear"></div>
-        </div>
+
+      <div class="wine">
+
+        ${fotoHTML(v)}
+
+        <h3>${v.nome}</h3>
+
+        <p><b>Safra:</b> ${v.safra || "-"}</p>
+
+        <p>🌎 ${v.pais || "-"}</p>
+
+        <p>🍇 ${v.uva || "-"}</p>
+
+        <p>⭐ ${estrelas(v.nota)}</p>
+
+        <p>🍾 ${v.quantidade || 0} garrafa(s)</p>
+
+        <p>💰 R$ ${(v.valor||0).toLocaleString("pt-BR")}</p>
+
+        ${
+          Number(v.quantidade)<=1
+          ? `<div class="alerta">⚠️ Estoque baixo</div>`
+          : ""
+        }
+
+        ${
+          v.recompra
+          ? `<span class="badge">❤️ Recomprar</span>`
+          : ""
+        }
+
+        ${
+          v.favorito
+          ? `<span class="badge">⭐ Favorito</span>`
+          : ""
+        }
+
+        <div class="clear"></div>
+
+        <button onclick="abrirDetalhe(${i})">
+          🍷 Ver ficha
+        </button>
+
+        <button onclick="editarVinho(${i})">
+          ✏️ Editar
+        </button>
+
+        <button onclick="darBaixa(${i})">
+          ➖ Dar baixa
+        </button>
+
+        <button onclick="excluirVinho(${i})">
+          🗑 Excluir
+        </button>
+
+      </div>
+
       `;
+
     });
+
 }
 
 function abrirDetalhe(i){
