@@ -315,33 +315,90 @@ function renderVinhos(){
 
 }
 
+
 function abrirDetalhe(i){
+
   const v = vinhos[i];
+
   const detalhe = document.getElementById("detalheVinho");
 
   detalhe.innerHTML = `
-    <div class="wine">
-      ${fotoHTML(v)}
-      <h2>${v.nome}</h2>
-      <p><b>Safra da garrafa:</b> ${v.safra || "-"}</p>
-      <p><b>País:</b> ${v.pais || "-"}</p>
-      <p><b>Região:</b> ${v.regiao || "-"}</p>
-      <p><b>Uva:</b> ${v.uva || "-"}</p>
-      <p><b>Temperatura:</b> ${v.temperatura || "-"}</p>
-      <p><b>Decantação:</b> ${v.decantacao || "-"}</p>
-      <p><b>Janela base:</b> ${v.janela || v.janelaBase || "-"}</p>
-      <p><b>Harmonização:</b> ${v.harmonizacao || "-"}</p>
-      <p><b>Quantidade:</b> ${v.quantidade || 0}</p>
-      <p><b>Valor pago:</b> R$ ${v.valor || 0}</p>
-      <p><b>Nota Delucca:</b> ${estrelas(v.nota)}</p>
-      <p>${v.comentario || ""}</p>
-      <span class="badge">${v.recompra ? "Recomprar" : "Adega"}</span>
-      <br><br>
-      <button onclick="abrirTela('adega')">Voltar</button>
-    </div>
+
+  <div class="wine">
+
+    ${fotoHTML(v)}
+
+    <h2>${v.nome}</h2>
+
+    <p><b>Safra:</b> ${v.safra || "-"}</p>
+
+    <p>⭐ ${estrelas(v.nota)}</p>
+
+    <br>
+
+    <span class="badge">🌎 ${v.pais || "-"}</span>
+    <span class="badge">🍇 ${v.uva || "-"}</span>
+
+    <hr>
+
+    <h3>🍷 Consumo</h3>
+
+    <p><b>Janela ideal:</b> ${v.janela || v.janelaBase || "-"}</p>
+
+    <p><b>Temperatura:</b> ${v.temperatura || "-"}</p>
+
+    <p><b>Decantação:</b> ${v.decantacao || "-"}</p>
+
+    <hr>
+
+    <h3>🥩 Harmonização</h3>
+
+    <p>${v.harmonizacao || "-"}</p>
+
+    <hr>
+
+    <h3>🍾 Minha Garrafa</h3>
+
+    <p><b>Quantidade:</b> ${v.quantidade || 0}</p>
+
+    <p><b>Valor pago:</b> R$ ${(v.valor || 0).toLocaleString("pt-BR")}</p>
+
+    <p><b>Status:</b> ${
+      Number(v.quantidade)>0
+      ? "Em estoque"
+      : "Finalizada"
+    }</p>
+
+    <hr>
+
+    <h3>💬 Comentário Delucca</h3>
+
+    <p>${v.comentario || "Sem comentário."}</p>
+
+    ${
+      v.recompra
+      ? `<span class="badge">❤️ Recomprar</span>`
+      : ""
+    }
+
+    ${
+      v.favorito
+      ? `<span class="badge">⭐ Favorito</span>`
+      : ""
+    }
+
+    <br><br>
+
+    <button onclick="abrirTela('adega')">
+      ← Voltar para Adega
+    </button>
+
+  </div>
+
   `;
 
   abrirTela("detalhe");
+
 }
 
 function renderRanking(){
