@@ -16,6 +16,21 @@ function normalizarNome(n){
  if(n.includes("zuccardi"))return"Zuccardi Q Malbec";
  return n;
 }
+function abrirScanner(){
+
+  const box = document.getElementById("scannerBox");
+
+  if(box){
+    box.classList.remove("hidden");
+  }
+
+  const input = document.getElementById("fotoArquivo");
+
+  if(input){
+    input.click();
+  }
+
+}
 function encontrarCatalogo(nome){
  if(typeof catalogo==="undefined")return null;
  const n=normalizarNome(nome);
