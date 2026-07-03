@@ -88,6 +88,35 @@ A safra, quantidade e valor pertencem à sua garrafa.
 <input id="quantidade" type="number" placeholder="Quantidade">
 <input id="valor" type="number" placeholder="Valor pago por garrafa">
 
+  <input id="safra" placeholder="Safra da garrafa">
+
+<input id="quantidade" type="number" placeholder="Quantidade">
+
+<input id="valor" type="number" placeholder="Valor pago por garrafa">
+
+<label><b>📷 Foto da Garrafa</b></label>
+
+<input
+type="file"
+id="fotoArquivo"
+accept="image/*"
+onchange="carregarFoto(event)">
+
+<input
+type="hidden"
+id="fotoBase64">
+
+<img
+id="previewFoto"
+style="width:140px;
+margin-top:12px;
+border-radius:12px;
+display:none;">
+
+<input id="pais" placeholder="País">
+
+<input id="uva" placeholder="Uva">
+
 <input id="pais" placeholder="País">
 <input id="uva" placeholder="Uva">
 <input id="janela" placeholder="Janela base">
