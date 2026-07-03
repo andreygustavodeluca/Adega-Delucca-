@@ -452,6 +452,42 @@ function abrirDetalhe(i){
   abrirTela("detalhe");
 
 }
+function abrirTela(tela){
+
+  const telas = [
+    "inicio",
+    "adega",
+    "cadastro",
+    "ranking",
+    "ia",
+    "detalhe"
+  ];
+
+  telas.forEach(id=>{
+
+    const el=document.getElementById(id);
+
+    if(el){
+
+      el.classList.add("hidden");
+
+    }
+
+  });
+
+  const atual=document.getElementById(tela);
+
+  if(atual){
+
+    atual.classList.remove("hidden");
+
+  }
+
+  if(tela==="adega") renderVinhos();
+
+  if(tela==="ranking") renderRanking();
+
+}
 
 function renderRanking(){
   const lista = document.getElementById("rankingLista");
