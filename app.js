@@ -187,27 +187,79 @@ function atualizarSugestao(){
 }
 
 
-function buscarNoCatalogo(){
-  const nome = document.getElementById("nome").value;
-  const item = encontrarCatalogo(nome);
 
-  if(!item){
-    alert("Vinho não encontrado no Catálogo Delucca.");
+function buscarNoCatalogo(){
+
+  const nome =
+    document.getElementById("nome")
+      .value
+      .trim()
+      .toLowerCase();
+
+  if(nome===""){
+
+    alert("Digite o nome do vinho.");
+
     return;
+
   }
 
-  document.getElementById("nome").value = item.nome;
-  document.getElementById("pais").value = item.pais;
-  document.getElementById("uva").value = item.uva;
-  document.getElementById("janela").value = item.janelaBase || "";
-  document.getElementById("harmonizacao").value = item.harmonizacao || "";
-  document.getElementById("comentario").value = item.comentario || "";
-  document.getElementById("nota").value = item.nota || 5;
-  document.getElementById("favorito").value = item.naoPodeFaltar ? "true" : "false";
-  document.getElementById("recompra").value = item.recompra ? "true" : "false";
-  document.getElementById("fotoBase64").value = item.imagem || "";
+  const resultados = catalogo.filter(v =>
+    v.nome.toLowerCase().includes(nome)
+  );
 
-  alert("Ficha técnica carregada. Agora informe safra, quantidade e valor pago.");
+  if(resultados.length===0){
+
+    alert("Vinho não encontrado no Catálogo Delucca.");
+
+    return;
+
+  }
+
+  if(resultados.length>1){
+
+    alert(
+      "Foram encontrados " +
+      resultados.length +
+      " rótulos. Será carregado o primeiro resultado."
+    );
+
+  }
+
+  const item = resultados[0];
+
+  document.getElementById("nome").value = item.nome || "";
+  document.getElementById("pais").value = item.pais || "";
+  document.getElementById("uva").value = item.uva || "";
+  document.getElementById("janela").value =
+      item.janela || item.janelaBase || "";
+
+  document.getElementById("harmonizacao").value =
+      item.harmonizacao || "";
+
+  document.getElementById("comentario").value =
+      item.comentario || "";
+
+  document.getElementById("nota").value =
+      item.nota || 5;
+
+  document.getElementById("favorito").value =
+      item.naoPodeFaltar ? "true" : "false";
+
+  document.getElementById("recompra").value =
+      item.recompra ? "true" : "false";
+
+  if(document.getElementById("fotoBase64")){
+
+    document.getElementById("fotoBase64").value =
+      item.imagem || "";
+
+  }
+
+  alert(
+    "🍷 Ficha técnica carregada.\n\nAgora informe apenas:\n\n• Safra\n• Quantidade\n• Valor pago"
+  );
+
 }
 
 function gerarRecomendacoes(){
